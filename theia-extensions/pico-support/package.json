@@ -1,16 +1,12 @@
 {
-  "private": true,
-  "name": "cdt-cloud-blueprint-product",
+  "name": "@eclipse-cdt-cloud/pico-support",
   "version": "1.30.0",
-  "description": "CDT.cloud Blueprint Product Branding",
+  "description": "Extension for generating Raspberry Pi Pico examples in CDT.cloud blueprint",
   "dependencies": {
     "@theia/core": "1.30.0",
-    "@theia/getting-started": "1.30.0",
-    "@theia/vsx-registry": "1.30.0",
     "@theia/workspace": "1.30.0",
-    "@eclipse-cdt-cloud/blueprint-example-generator": "1.30.0",
-    "@eclipse-cdt-cloud/pico-support": "1.30.0",
-    "inversify": "^5.1.1"
+    "@theia/filesystem": "1.30.0",
+    "@theia/editor": "1.30.0"
   },
   "devDependencies": {
     "rimraf": "^2.7.1",
@@ -19,10 +15,9 @@
   },
   "theiaExtensions": [
     {
-      "frontendElectron": "lib/browser/theia-blueprint-frontend-module",
-      "electronMain": "lib/electron-main/theia-blueprint-main-module",
-      "frontend": "lib/browser/theia-blueprint-frontend-module",
-      "backend": "lib/node/theia-blueprint-backend-module"
+      "frontendElectron": "lib/browser/frontend-module",
+      "frontend": "lib/browser/frontend-module",
+      "backend": "lib/node/backend-module"
     }
   ],
   "keywords": [
@@ -38,6 +33,7 @@
   },
   "homepage": "https://cdt-cloud.io/",
   "files": [
+    "resources",
     "lib",
     "src"
   ],
@@ -48,8 +44,5 @@
     "lint": "eslint --ext js,jsx,ts,tsx src",
     "lint:fix": "eslint --ext js,jsx,ts,tsx src --fix",
     "update:next": "ts-node ../../scripts/update-theia-to-next.ts"
-  },
-  "peerDependencies": {
-    "react": "^16.8.0"
   }
 }
