@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022 EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -13,14 +13,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import '../../src/browser/css/index.css';
+import { DeviceManagerViewWidget } from './device-manager-view-widget';
+import { AbstractViewContribution } from '@theia/core/lib/browser';
 
-import { LabelProviderContribution } from '@theia/core/lib/browser/label-provider';
-import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
-import { bindDeviceManager } from './device-manager/device-manager-module-util';
-import { CDTCloudTreeLabelProviderContribution } from './label-provider';
+export const OpenDeviceManagerCommand = {
+    id: 'device-manager-view.toggle',
+};
 
-export default new ContainerModule((bind: interfaces.Bind) => {
-    bindDeviceManager(bind);
-    bind(LabelProviderContribution).to(CDTCloudTreeLabelProviderContribution).inSingletonScope();
-});
+export class DeviceManagerFrontendContribution extends AbstractViewContribution<DeviceManagerViewWidget> {
+    constructor() {
+        super({
+            widgetId: DeviceManagerViewWidget.ID,
+            widgetName: DeviceManagerViewWidget.LABEL,
+            defaultWidgetOptions: {
+                area: 'main',
+            },
+            toggleCommandId: OpenDeviceManagerCommand.id,
+        });
+    }
+}

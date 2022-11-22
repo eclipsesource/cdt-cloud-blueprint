@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022 EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -13,14 +13,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import '../../src/browser/css/index.css';
+import { interfaces } from '@theia/core/shared/inversify';
+import { DeviceManagerFrontendContribution } from './device-manager-frontend-contribution';
+import { DeviceManagerViewWidget } from './device-manager-view-widget';
+import { WidgetFactory, bindViewContribution } from '@theia/core/lib/browser';
 
-import { LabelProviderContribution } from '@theia/core/lib/browser/label-provider';
-import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
-import { bindDeviceManager } from './device-manager/device-manager-module-util';
-import { CDTCloudTreeLabelProviderContribution } from './label-provider';
-
-export default new ContainerModule((bind: interfaces.Bind) => {
-    bindDeviceManager(bind);
-    bind(LabelProviderContribution).to(CDTCloudTreeLabelProviderContribution).inSingletonScope();
+export const bindDeviceManager = ((bind: interfaces.Bind) => {
+    bind(DeviceManagerViewWidget).toSelf();
+    bind(WidgetFactory).toDynamicValue(context => ({
+        id: DeviceManagerViewWidget.ID,
+        createWidget: () => context.container.get<DeviceManagerViewWidget>(DeviceManagerViewWidget),
+    })).inSingletonScope();
+    bindViewContribution(bind, DeviceManagerFrontendContribution);
 });
