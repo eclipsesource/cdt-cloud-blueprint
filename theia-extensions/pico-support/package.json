@@ -4,9 +4,8 @@
   "description": "Extension for generating Raspberry Pi Pico examples in CDT.cloud blueprint",
   "dependencies": {
     "@theia/core": "1.30.0",
-    "@theia/workspace": "1.30.0",
     "@theia/filesystem": "1.30.0",
-    "@theia/editor": "1.30.0"
+    "inversify": "^5.1.1"
   },
   "devDependencies": {
     "rimraf": "^2.7.1",
@@ -33,7 +32,6 @@
   },
   "homepage": "https://cdt-cloud.io/",
   "files": [
-    "resources",
     "lib",
     "src"
   ],
@@ -41,6 +39,7 @@
     "prepare": "yarn clean && yarn build",
     "clean": "rimraf lib *.tsbuildinfo",
     "build": "tsc -b",
+    "watch": "tsc -w",
     "lint": "eslint --ext js,jsx,ts,tsx src",
     "lint:fix": "eslint --ext js,jsx,ts,tsx src --fix",
     "update:next": "ts-node ../../scripts/update-theia-to-next.ts"

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource
+ * Copyright (C) 2022 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -13,8 +13,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
+import '../../src/browser/css/index.css';
 
+import { LabelProviderContribution } from '@theia/core/lib/browser/label-provider';
 import { ContainerModule } from '@theia/core/shared/inversify';
+import { CDTCloudTreeLabelProviderContribution } from './label-provider';
 
-export default new ContainerModule(() => {
+export default new ContainerModule(bind => {
+    bind(LabelProviderContribution).to(CDTCloudTreeLabelProviderContribution).inSingletonScope();
 });
