@@ -4,9 +4,12 @@
     "version": "2.0.0",
     "tasks": [
       {
-          "label": "Binary build (blink-example)",
+          "label": "Binary build (blink)",
           "type": "shell",
-          "command": "cd blink && cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1  && make -C build -j4",
+          "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug && make -C build -j4",
+          "options": {
+              "cwd": "${workspaceFolder}/blink"
+          },
           "group": {
               "kind": "build",
               "isDefault": true
@@ -15,7 +18,15 @@
           "runOptions": {
               "runOn": "folderOpen"
           }
-      }
-  ]
-  }
-  
+        },
+        {
+          "label": "Clean example rm build folder (blink)",
+          "type": "shell",
+          "options": {
+              "cwd": "${workspaceFolder}/blink"
+          },
+          "command": "rm -rf build/",
+          "problemMatcher": []
+        }
+    ]
+}
