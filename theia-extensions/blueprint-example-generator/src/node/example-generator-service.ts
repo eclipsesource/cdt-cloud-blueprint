@@ -56,10 +56,10 @@ export class ExampleGeneratorServiceImpl implements ExampleGeneratorService {
             return 'EXAMPLE_TRACES_README.md';
         }
         if (exampleId === Examples.PICO_BLINK) {
-            return 'PICO_BLINK_README.md';
+            return 'blink/README.md';
         }
         if (exampleId === Examples.PICO_DOOROPENER) {
-            return 'PICO_DOOROPENER_README.md';
+            return 'dooropener/README.md';
         }
         return undefined;
     }

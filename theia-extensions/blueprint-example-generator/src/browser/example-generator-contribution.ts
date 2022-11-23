@@ -14,11 +14,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { Command, CommandContribution, CommandHandler, CommandRegistry, MessageService, nls } from '@theia/core';
+import { Command, CommandContribution, CommandHandler, CommandRegistry, CommandService, MessageService, nls } from '@theia/core';
 import { LabelProvider, QuickInputService, QuickPickService, QuickPickValue } from '@theia/core/lib/browser';
 import URI from '@theia/core/lib/common/uri';
 import { EditorManager } from '@theia/editor/lib/browser';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
+import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { inject, injectable } from 'inversify';
 import { ExampleGeneratorService, Examples } from '../common/protocol';
@@ -55,6 +56,9 @@ export class GenerateExampleCommandHandler implements CommandHandler {
     @inject(EditorManager)
     protected readonly editorManager: EditorManager;
 
+    @inject(CommandService)
+    protected readonly commandService: CommandService;
+
     async execute(...args: string[]): Promise<void> {
         const exampleId = await this.getExampleId(args);
         if (!exampleId) {
@@ -71,7 +75,11 @@ export class GenerateExampleCommandHandler implements CommandHandler {
         try {
             const fileToBeOpened = await this.exampleGeneratorService.generateExample(exampleId, targetFolder.toString());
             if (fileToBeOpened) {
-                this.editorManager.open(new URI(fileToBeOpened));
+                const fileUri = new URI(fileToBeOpened);
+                this.editorManager.open(fileUri);
+                // Refresh navigator and reveal newly created project
+                await this.commandService.executeCommand(FileNavigatorCommands.REFRESH_NAVIGATOR.id);
+                await this.commandService.executeCommand(FileNavigatorCommands.REVEAL_IN_NAVIGATOR.id, fileUri);
             }
         } catch (error) {
             console.error('Uncaught Exception: ', error.toString());
