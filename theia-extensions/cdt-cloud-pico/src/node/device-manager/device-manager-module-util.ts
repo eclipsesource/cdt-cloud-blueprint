@@ -16,11 +16,11 @@
 import { ConnectionHandler, JsonRpcConnectionHandler } from '@theia/core';
 import { interfaces } from '@theia/core/shared/inversify';
 import { DeviceListener, DeviceManagerService, deviceManagerServicePath } from '../../common/device-manager/device-manager-service';
-import { MockDeviceManagerService } from './mock-device-manager-backend-service';
+import { PicotoolDeviceManagerService } from './device-manager-backend-service';
 
 export const bindDeviceManager = (bind: interfaces.Bind) => {
     bind(DeviceManagerService)
-        .to(MockDeviceManagerService)
+        .to(PicotoolDeviceManagerService)
         .inSingletonScope();
     bind(ConnectionHandler)
         .toDynamicValue(
