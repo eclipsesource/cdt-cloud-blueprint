@@ -4,9 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Binary build release (blink)",
+            "label": "Run Cmake (blink)",
             "type": "shell",
-            "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Release && make -C build -j4",
+            "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
             "options": {
                 "cwd": "${workspaceFolder}/blink"
             },
@@ -19,21 +19,36 @@
                 "runOn": "folderOpen"
             }
         },
-        {
-            "label": "Binary build debug (blink)",
-            "type": "shell",
-            "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug && make -C build -j4",
-            "options": {
-                "cwd": "${workspaceFolder}/blink"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": [],
-            "runOptions": {
-                "runOn": "folderOpen"
-            }
+        "label": "Binary build release (blink)",
+        "type": "shell",
+        "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build -j4",
+        "options": {
+            "cwd": "${workspaceFolder}/blink"
+        },
+        "group": {
+            "kind": "build",
+            "isDefault": true
+        },
+        "problemMatcher": [],
+        "runOptions": {
+            "runOn": "folderOpen"
         }
-    ]
+    },
+    {
+        "label": "Binary build debug (blink)",
+        "type": "shell",
+        "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build -j4",
+        "options": {
+            "cwd": "${workspaceFolder}/blink"
+        },
+        "group": {
+            "kind": "build",
+            "isDefault": true
+        },
+        "problemMatcher": [],
+        "runOptions": {
+            "runOn": "folderOpen"
+        }
+    }
+]
 }

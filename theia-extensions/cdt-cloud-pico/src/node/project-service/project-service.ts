@@ -14,8 +14,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { Path } from '@theia/core';
-import { injectable } from '@theia/core/shared/inversify';
-import { TaskConfiguration } from '@theia/task/lib/common';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { TaskConfiguration, TaskInfo, TaskServer } from '@theia/task/lib/common';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { copySync, mkdirSync, rmSync } from 'fs-extra';
 import { ProjectClient, ProjectService } from '../../common/project-service';
@@ -33,6 +33,9 @@ const WORKSPACE_THEIA_TASKS = `${WORKSPACE_THEIA_DIRECTORY}/tasks.json`;
 export class DefaultProjectService implements ProjectService {
 
     private client?: ProjectClient;
+
+    @inject(TaskServer)
+    private taskServer: TaskServer;
 
     async createProject(workspacePath: string, projectName: string, hardwareType: HardwareType, projectTemplate: ProjectTemplate): Promise<string> {
         this.logInfo(`Create CDTCloud project '${projectName}' from template '${projectTemplate}' in '${workspacePath}' for hardwareType '${hardwareType}'`);
@@ -57,6 +60,7 @@ export class DefaultProjectService implements ProjectService {
         // Add theia workspace tasks
         this.addTheiaWorkspaceTasks(taskConfiguration, projectPath);
         // Return path to newly created project
+        this.triggerCMakeBuild(taskConfiguration, projectPath, projectName);
         return projectPath;
     }
 
@@ -66,6 +70,17 @@ export class DefaultProjectService implements ProjectService {
         rmSync(projectPath, { recursive: true, force: true });
         // Remove tasks configurations
         this.removeTheiaWorkspaceTasks(projectPath, projectName);
+    }
+
+    protected triggerCMakeBuild(taskConfiguration: TaskConfiguration, projectPath: string, projectName: string): Promise<TaskInfo> {
+        // retrieve Run Cmake task from the list of tasks in the task configuration
+        const task: TaskConfiguration = taskConfiguration.tasks.filter(
+            (taskObject: { label: string }) => taskObject.label === `Run CMake (${projectName})`)[0];
+        // copy task to override the project path by the current one.
+        const localTask = { ...task };
+        localTask.options.cwd = projectPath;
+        this.logInfo('Running '.concat(JSON.stringify(localTask)));
+        return this.taskServer.run(localTask, projectPath);
     }
 
     protected copyTemplateProject(projectPath: string, hardwareType: HardwareType, projectTemplate: ProjectTemplate): void {

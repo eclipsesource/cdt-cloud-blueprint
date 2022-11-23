@@ -2,12 +2,28 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Run CMake",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    },
+    {
       "label": "Binary build release",
       "type": "shell",
       "options": {
         "cwd": "${workspaceFolder}"
       },
-      "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Release && make -C build -j4",
+      "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build -j4",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -23,7 +39,7 @@
       "options": {
         "cwd": "${workspaceFolder}"
       },
-      "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug && make -C build -j4",
+      "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build -j4",
       "group": {
         "kind": "build",
         "isDefault": true
