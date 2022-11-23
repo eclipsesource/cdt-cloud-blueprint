@@ -22,6 +22,7 @@ import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
 import { bindCDTCloudNavigator } from './cdt-navigator/navigator-module-util';
 import { bindDeviceManager } from './device-manager/device-manager-module-util';
 import { ProjectTreeLabelProviderContribution } from './label-provider';
+import { bindPicoPreferences } from './preferences';
 import { ProjectContribution } from './project-command-contribution';
 import { bindProjectService } from './project-service/project-service-module-util';
 import { bindToolbarContribution } from './toolbar-contribution';
@@ -31,6 +32,7 @@ export default new ContainerModule((bind: interfaces.Bind, _unbind: interfaces.U
     bindProjectService(bind);
     bindCDTCloudNavigator(bind);
     bindToolbarContribution(rebind);
+    bindPicoPreferences(bind);
 
     bind(LabelProviderContribution).to(ProjectTreeLabelProviderContribution).inSingletonScope();
     bind(CommandContribution).to(ProjectContribution).inSingletonScope();

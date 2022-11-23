@@ -26,15 +26,17 @@ import {
     QuickPickValue,
     SelectionService
 } from '@theia/core';
-import { CommonMenus, OpenerService } from '@theia/core/lib/browser';
+import { CommonMenus, OpenerService, PreferenceService } from '@theia/core/lib/browser';
 import URI from '@theia/core/lib/common/uri';
 import { FileNavigatorCommands, NavigatorContextMenu } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TaskService } from '@theia/task/lib/browser/task-service';
+import { PanelKind, RevealKind, TaskConfiguration, TaskInfo, TaskScope } from '@theia/task/lib/common';
 import { WorkspaceService } from '@theia/workspace/lib/browser';
 import { inject, injectable } from 'inversify';
 
 import { ProjectService } from '../common/project-service';
 import { HardwareType, ProjectTemplate } from '../common/project-types';
+import { OPEN_OCD_PATH_SETTING_ID } from './preferences';
 import * as ProjectUtils from './project-service/project-utils';
 
 export namespace ProjectCommands {
@@ -58,6 +60,14 @@ export namespace ProjectCommands {
         id: 'cdtcloud.pico.project.flash',
         label: 'Flash Project to device'
     };
+    export const START_OPENOCD: Command = {
+        id: 'cdtcloud.pico.openocd.start',
+        label: 'Start OpenOCD'
+    };
+    export const STOP_OPENOCD: Command = {
+        id: 'cdtcloud.pico.openocd.stop',
+        label: 'Stop OpenOCD'
+    };
 }
 
 @injectable()
@@ -68,6 +78,8 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     protected readonly messageService: MessageService;
     @inject(OpenerService)
     protected readonly openerService: OpenerService;
+    @inject(PreferenceService)
+    protected readonly preferenceService: PreferenceService;
     @inject(ProjectService)
     protected readonly projectService: ProjectService;
     @inject(QuickInputService)
@@ -78,6 +90,8 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     protected readonly taskService: TaskService;
     @inject(WorkspaceService)
     protected readonly workspaceService: WorkspaceService;
+
+    protected currentOpenOCDTask: TaskInfo | undefined;
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(ProjectCommands.CREATE_PROJECT, {
@@ -104,6 +118,16 @@ export class ProjectContribution implements CommandContribution, MenuContributio
             execute: projectPath => this.flashProject(projectPath),
             isEnabled: () => this.isProjectCreationAllowed(),
             isVisible: () => false // do not show in command palette
+        });
+        registry.registerCommand(ProjectCommands.START_OPENOCD, {
+            execute: () => this.startOpenOCD(),
+            isEnabled: () => true,
+            isVisible: () => true
+        });
+        registry.registerCommand(ProjectCommands.STOP_OPENOCD, {
+            execute: () => this.stopOpenOCD(),
+            isEnabled: () => true,
+            isVisible: () => true
         });
     }
 
@@ -207,6 +231,21 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         this.messageService.warn('TODO: Will flash project to device');
     }
 
+    protected async startOpenOCD(): Promise<void> {
+        // No need to check if task is running, taskService does this by activating the running task and prompting the user to restart or terminate if desired
+        const openOCDPath = this.preferenceService.get<string>(OPEN_OCD_PATH_SETTING_ID);
+        const openOCDCommand = `${openOCDPath}/src/openocd -s ${openOCDPath}/tcl -f interface/picoprobe.cfg -f target/rp2040.cfg`;
+        this.currentOpenOCDTask = await this.taskService.runTask(
+            this.createTaskConfiguration('Start OpenOCD', openOCDCommand));
+    }
+
+    protected async stopOpenOCD(): Promise<void> {
+        if (this.currentOpenOCDTask) {
+            await this.taskService.terminateTask(this.currentOpenOCDTask);
+            this.currentOpenOCDTask = undefined;
+        }
+    }
+
     protected getProjectName(projectPath: string): string {
         return new URI(projectPath).path.base;
     }
@@ -225,6 +264,21 @@ export class ProjectContribution implements CommandContribution, MenuContributio
             return workspaceRoot.resource;
         }
         throw Error('Cannot create CDT Cloud Project: project creation is not allowed, no workspace opened!');
+    }
+
+    protected createTaskConfiguration(label: string, command: string): TaskConfiguration {
+        return {
+            label: label,
+            type: 'shell',
+            group: 'none',
+            command: command,
+            presentation: {
+                reveal: RevealKind.Always,
+                panel: PanelKind.Dedicated
+            },
+            problemMatcher: [],
+            _scope: TaskScope.Workspace
+        };
     }
 
 }

@@ -51,7 +51,20 @@ export const ToolbarDefaultsOverride: () => DeflatedToolbarTree = () => ({
                 }
             ]
         ],
-        [ToolbarAlignment.CENTER]: [],
+        [ToolbarAlignment.CENTER]: [
+            [
+                {
+                    id: 'cdtcloud.pico.openocd.start',
+                    command: 'cdtcloud.pico.openocd.start',
+                    icon: 'codicon codicon-play-circle'
+                },
+                {
+                    id: 'cdtcloud.pico.openocd.stop',
+                    command: 'cdtcloud.pico.openocd.stop',
+                    icon: 'codicon codicon-stop-circle'
+                }
+            ]
+        ],
         [ToolbarAlignment.RIGHT]: [
             [
                 {
