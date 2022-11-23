@@ -14,16 +14,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import * as React from 'react';
+import { Examples, GenerateExampleCommand } from '@eclipse-cdt-cloud/blueprint-example-generator/lib/browser';
+import { CommandService, nls } from '@theia/core';
+import { codicon, Message, PreferenceService } from '@theia/core/lib/browser';
+import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
-import { renderDocumentation, renderDownloads, renderSourceCode, renderSupport, renderTickets, renderWhatIs, renderWhatIsNot } from './branding-util';
 import { GettingStartedWidget } from '@theia/getting-started/lib/browser/getting-started-widget';
 import { VSXEnvironment } from '@theia/vsx-registry/lib/common/vsx-environment';
-import { WindowService } from '@theia/core/lib/browser/window/window-service';
-import { codicon, Message, PreferenceService } from '@theia/core/lib/browser';
+import * as React from 'react';
+import { renderDocumentation, renderDownloads, renderSourceCode, renderSupport, renderTickets, renderWhatIs, renderWhatIsNot } from './branding-util';
 import { BlueprintPreferences } from './theia-blueprint-preferences';
-import { CommandService, nls } from '@theia/core';
-import { GenerateExampleCommand, Examples } from '@eclipse-cdt-cloud/blueprint-example-generator/lib/browser';
 
 @injectable()
 export class TheiaBlueprintGettingStartedWidget extends GettingStartedWidget {
@@ -199,6 +199,24 @@ export class TheiaBlueprintGettingStartedWidget extends GettingStartedWidget {
                     onClick={() => this.doGenerateExample(Examples.CLANGD_CONTEXTS)}
                     onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, Examples.CLANGD_CONTEXTS)}>
                     {nls.localizeByDefault('Clangd contexts')}
+                </a>
+            </div>
+            <div className='gs-action-container'>
+                <a
+                    role={'button'}
+                    tabIndex={0}
+                    onClick={() => this.doGenerateExample(Examples.PICO_BLINK)}
+                    onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, Examples.PICO_BLINK)}>
+                    {nls.localizeByDefault('Pico Blink')}
+                </a>
+            </div>
+            <div className='gs-action-container'>
+                <a
+                    role={'button'}
+                    tabIndex={0}
+                    onClick={() => this.doGenerateExample(Examples.PICO_DOOROPENER)}
+                    onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, Examples.PICO_DOOROPENER)}>
+                    {nls.localizeByDefault('Pico DoorOpener')}
                 </a>
             </div>
         </div>;

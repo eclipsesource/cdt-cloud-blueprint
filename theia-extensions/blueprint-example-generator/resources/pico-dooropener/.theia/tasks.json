@@ -1,0 +1,21 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+      {
+          "label": "Binary build (dooropener)",
+          "type": "shell",
+          "command": "cd dooropener && cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1  && make -C build -j4",
+          "group": {
+              "kind": "build",
+              "isDefault": true
+          },
+          "problemMatcher": [],
+          "runOptions": {
+              "runOn": "folderOpen"
+          }
+      }
+  ]
+  }
+  

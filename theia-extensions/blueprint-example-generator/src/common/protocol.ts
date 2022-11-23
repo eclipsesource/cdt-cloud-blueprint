@@ -20,7 +20,9 @@ export const EXAMPLE_GENERATOR_PATH = '/services/example-generator';
 export enum Examples {
     CMAKE_EXAMPLE = 'cmake-example',
     EXAMPLE_TRACES = 'example-traces',
-    CLANGD_CONTEXTS = 'clangd-contexts'
+    CLANGD_CONTEXTS = 'clangd-contexts',
+    PICO_BLINK = 'pico-blink',
+    PICO_DOOROPENER = 'pico-dooropener',
 }
 
 /**

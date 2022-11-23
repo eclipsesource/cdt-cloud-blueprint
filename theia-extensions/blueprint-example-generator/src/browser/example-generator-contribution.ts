@@ -91,7 +91,9 @@ export class GenerateExampleCommandHandler implements CommandHandler {
         const items: QuickPickValue<string>[] = [
             { label: 'CMake example', value: Examples.CMAKE_EXAMPLE },
             { label: 'Example traces', value: Examples.EXAMPLE_TRACES },
-            { label: 'Clangd contexts', value: Examples.CLANGD_CONTEXTS }
+            { label: 'Clangd contexts', value: Examples.CLANGD_CONTEXTS },
+            { label: 'Pico Blink', value: Examples.PICO_BLINK },
+            { label: 'Pico DoorOpener', value: Examples.PICO_DOOROPENER }
         ];
         const selection = await this.quickPickService.show(items, {
             placeholder: 'Select type of example to generate'
