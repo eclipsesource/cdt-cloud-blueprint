@@ -1,5 +1,5 @@
 {
-  "name": "@eclipse-cdt-cloud/pico-support",
+  "name": "@eclipse-cdt-cloud/cdt-cloud-pico",
   "version": "1.30.0",
   "description": "Extension for generating Raspberry Pi Pico examples in CDT.cloud blueprint",
   "dependencies": {
