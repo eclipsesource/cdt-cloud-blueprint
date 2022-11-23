@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022 EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -13,9 +13,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
-import { bindDeviceManager } from './device-manager/device-manager-module-util';
+import { Emitter, Event } from '@theia/core';
+import { injectable } from '@theia/core/shared/inversify';
+import { Device } from '../../common/device-manager/device';
+import { DeviceListener } from '../../common/device-manager/device-manager-service';
 
-export default new ContainerModule((bind: interfaces.Bind) => {
-    bindDeviceManager(bind);
-});
+@injectable()
+export class FrontendDeviceListener implements DeviceListener {
+
+    protected onDeviceChangeEmitter = new Emitter<Device>();
+    get onDeviceChange(): Event<Device> {
+        return this.onDeviceChangeEmitter.event;
+    }
+
+    notifyDeviceChange(device: Device): void {
+        this.onDeviceChangeEmitter.fire(device);
+    }
+}

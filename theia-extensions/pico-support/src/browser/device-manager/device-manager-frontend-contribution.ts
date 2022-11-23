@@ -13,8 +13,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { DeviceManagerViewWidget } from './device-manager-view-widget';
 import { AbstractViewContribution } from '@theia/core/lib/browser';
+import { DeviceManagerViewWidget } from './device-manager-view-widget';
 
 export const OpenDeviceManagerCommand = {
     id: 'device-manager-view.toggle',

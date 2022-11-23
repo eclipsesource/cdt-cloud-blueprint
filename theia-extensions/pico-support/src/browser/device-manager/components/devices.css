@@ -1,0 +1,35 @@
+.red {
+  background: #ff0000;
+}
+
+.green {
+  background: #00ff00;
+}
+
+.orange {
+  background: #ffa500;
+}
+
+.circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.list {
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.list .property {
+  width: 30%;
+  text-align: left;
+}
+
+.list .value {
+  text-align: left;
+  padding-left: 2rem;
+  width: 70%;
+  display: inline-block;
+  box-sizing: border-box;
+}

@@ -13,9 +13,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
-import { bindDeviceManager } from './device-manager/device-manager-module-util';
+import { JsonRpcServer } from '@theia/core';
+import { Device } from './device';
 
-export default new ContainerModule((bind: interfaces.Bind) => {
-    bindDeviceManager(bind);
-});
+export const DeviceListener = Symbol('DeviceListener');
+
+export interface DeviceListener {
+    notifyDeviceChange(device: Device): void;
+}
+
+export const deviceManagerServicePath = '/services/device-manager';
+
+export const DeviceManagerService = Symbol('DeviceManagerService');
+
+export interface DeviceManagerService extends JsonRpcServer<DeviceListener> {
+    getAllDevices(): Promise<Device[]>;
+}

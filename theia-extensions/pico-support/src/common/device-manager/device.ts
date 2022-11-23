@@ -13,9 +13,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
-import { bindDeviceManager } from './device-manager/device-manager-module-util';
+export interface DeviceType {
+    id: 'unknown' | string;
+    description?: string;
+}
 
-export default new ContainerModule((bind: interfaces.Bind) => {
-    bindDeviceManager(bind);
-});
+export interface Device {
+    deviceType: DeviceType
+    id: string;
+    label: string;
+    connected: boolean;
+    image: 'unknown' | string;
+    state: 'unknown' | string;
+}

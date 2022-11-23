@@ -13,16 +13,29 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { injectable, postConstruct } from '@theia/core/shared/inversify';
 import { codicon, ReactWidget } from '@theia/core/lib/browser';
 import { nls } from '@theia/core/lib/common/nls';
+import {
+    inject,
+    injectable,
+    postConstruct
+} from '@theia/core/shared/inversify';
 import * as React from '@theia/core/shared/react';
+import { DeviceManagerService } from '../../common/device-manager/device-manager-service';
+import { DevicesState, LoadingDevicesList } from './components/devices-list';
 
 @injectable()
 export class DeviceManagerViewWidget extends ReactWidget {
-
     static readonly ID = 'device-manager';
-    static readonly LABEL = nls.localize('cdt-cloud/device-manager/view/device-manager', 'Device Manager');
+    static readonly LABEL = nls.localize(
+        'cdt-cloud/device-manager/view/device-manager',
+        'Device Manager'
+    );
+
+    @inject(DeviceManagerService)
+    protected readonly deviceManagerService: DeviceManagerService;
+
+    protected devicesState: DevicesState = { type: 'loading' };
 
     @postConstruct()
     init(): void {
@@ -31,13 +44,20 @@ export class DeviceManagerViewWidget extends ReactWidget {
         this.title.iconClass = codicon('circuit-board');
         this.title.closable = true;
         this.update();
+
+        this.deviceManagerService
+            .getAllDevices()
+            .then(devices => {
+                this.devicesState = { type: 'success', devices };
+                this.update();
+            })
+            .catch(error => {
+                this.devicesState = { type: 'error', error: error.message };
+                this.update();
+            });
     }
 
     render(): React.ReactNode {
-        return (
-            <div>
-                Device Manager
-            </div>
-        );
+        return <LoadingDevicesList state={this.devicesState} />;
     }
 }

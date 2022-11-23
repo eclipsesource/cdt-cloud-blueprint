@@ -13,10 +13,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
+import { bindViewContribution, WebSocketConnectionProvider, WidgetFactory } from '@theia/core/lib/browser';
 import { interfaces } from '@theia/core/shared/inversify';
+import { DeviceListener, DeviceManagerService, deviceManagerServicePath } from '../../common/device-manager/device-manager-service';
+import { FrontendDeviceListener } from './device-listener';
 import { DeviceManagerFrontendContribution } from './device-manager-frontend-contribution';
 import { DeviceManagerViewWidget } from './device-manager-view-widget';
-import { WidgetFactory, bindViewContribution } from '@theia/core/lib/browser';
 
 export const bindDeviceManager = ((bind: interfaces.Bind) => {
     bind(DeviceManagerViewWidget).toSelf();
@@ -25,4 +27,17 @@ export const bindDeviceManager = ((bind: interfaces.Bind) => {
         createWidget: () => context.container.get<DeviceManagerViewWidget>(DeviceManagerViewWidget),
     })).inSingletonScope();
     bindViewContribution(bind, DeviceManagerFrontendContribution);
+
+    bind(FrontendDeviceListener).toSelf().inSingletonScope();
+    bind(DeviceListener).toService(FrontendDeviceListener);
+
+    bind(DeviceManagerService)
+        .toDynamicValue(ctx => {
+            const provider = ctx.container.get(WebSocketConnectionProvider);
+            const listener: DeviceListener =
+                ctx.container.get(DeviceListener);
+
+            return provider.createProxy(deviceManagerServicePath, listener);
+        })
+        .inSingletonScope();
 });
