@@ -14,11 +14,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 .cdt-cloud-icon {
-    background-image: url('../../../../../resources/CDTCloudBlueprintIcon.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
-    width: 15px;
-    height: 15px;
+    background-image: url('../../../../../resources/CDTCloudBlueprintIcon.svg') !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    width: 15px !important;
+    height: 15px !important;
 }
 
 .p-Menu-itemIcon.cdt-cloud-icon {

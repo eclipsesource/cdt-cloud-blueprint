@@ -26,7 +26,7 @@ import {
     QuickPickValue,
     SelectionService
 } from '@theia/core';
-import { CommonMenus, ConfirmDialog } from '@theia/core/lib/browser';
+import { CommonMenus, OpenerService } from '@theia/core/lib/browser';
 import URI from '@theia/core/lib/common/uri';
 import { FileNavigatorCommands, NavigatorContextMenu } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TaskService } from '@theia/task/lib/browser/task-service';
@@ -42,10 +42,6 @@ export namespace ProjectCommands {
         id: 'cdtcloud.pico.project.build',
         label: 'Build Project'
     };
-    export const CLEAR_PROJECT: Command = {
-        id: 'cdtcloud.pico.project.clean',
-        label: 'Clean Project'
-    };
     export const CREATE_PROJECT: Command = {
         id: 'cdtcloud.pico.project.create',
         label: 'New CDT Cloud Project...'
@@ -54,9 +50,13 @@ export namespace ProjectCommands {
         id: 'cdtcloud.pico.project.debug',
         label: 'Debug Project'
     };
-    export const DELETE_PROJECT: Command = {
-        id: 'cdtcloud.pico.project.delete',
-        label: 'Delete Project'
+    export const EDIT_PROJECT: Command = {
+        id: 'cdtcloud.pico.project.edit',
+        label: 'Edit Project File'
+    };
+    export const FLASH_PROJECT: Command = {
+        id: 'cdtcloud.pico.project.flash',
+        label: 'Flash Project to device'
     };
 }
 
@@ -66,6 +66,8 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     protected readonly commandService: CommandService;
     @inject(MessageService)
     protected readonly messageService: MessageService;
+    @inject(OpenerService)
+    protected readonly openerService: OpenerService;
     @inject(ProjectService)
     protected readonly projectService: ProjectService;
     @inject(QuickInputService)
@@ -88,18 +90,18 @@ export class ProjectContribution implements CommandContribution, MenuContributio
             isEnabled: () => this.isProjectCreationAllowed(),
             isVisible: () => false // do not show in command palette
         });
-        registry.registerCommand(ProjectCommands.CLEAR_PROJECT, {
-            execute: projectPath => this.clearProject(projectPath),
-            isEnabled: () => this.isProjectCreationAllowed(),
-            isVisible: () => false // do not show in command palette
-        });
         registry.registerCommand(ProjectCommands.DEBUG_PROJECT, {
             execute: projectPath => this.debugProject(projectPath),
             isEnabled: () => this.isProjectCreationAllowed(),
             isVisible: () => false // do not show in command palette
         });
-        registry.registerCommand(ProjectCommands.DELETE_PROJECT, {
-            execute: projectPath => this.deleteProject(projectPath),
+        registry.registerCommand(ProjectCommands.EDIT_PROJECT, {
+            execute: projectPath => this.editProject(projectPath),
+            isEnabled: () => this.isProjectCreationAllowed(),
+            isVisible: () => false // do not show in command palette
+        });
+        registry.registerCommand(ProjectCommands.FLASH_PROJECT, {
+            execute: projectPath => this.flashProject(projectPath),
             isEnabled: () => this.isProjectCreationAllowed(),
             isVisible: () => false // do not show in command palette
         });
@@ -186,21 +188,23 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         this.taskService.runConfiguredTask(this.taskService.startUserAction(), workspaceRoot, ProjectUtils.getBuildTaskLabel(projectName));
     }
 
-    protected async clearProject(projectPath: string): Promise<void> {
+    protected async debugProject(projectPath: string): Promise<void> {
         const workspaceRoot = (await this.getWorkspaceRoot()).toString();
         const projectName = this.getProjectName(projectPath);
-        this.taskService.runConfiguredTask(this.taskService.startUserAction(), workspaceRoot, ProjectUtils.getCleanTaskLabel(projectName));
-    }
-
-    protected async debugProject(projectPath: string): Promise<void> {
+        this.taskService.runConfiguredTask(this.taskService.startUserAction(), workspaceRoot, ProjectUtils.getBuildTaskLabel(projectName, true /* debugBuild*/));
         // TODO: run launch config once its ready
+        this.messageService.warn('Build in debug mode, TODO: should start debug project');
     }
 
-    protected async deleteProject(projectPath: string): Promise<void> {
-        const projectName = this.getProjectName(projectPath);
-        if (await this.confirmDelete(projectName)) {
-            this.projectService.deleteProject(projectPath, projectName);
-        }
+    protected async editProject(projectPath: string): Promise<void> {
+        const uri = new URI(projectPath).resolve('.cdtcloud');
+        const opener = await this.openerService.getOpener(uri);
+        opener.open(uri);
+    }
+
+    protected async flashProject(projectPath: string): Promise<void> {
+        // TODO: flash project to device
+        this.messageService.warn('TODO: Will flash project to device');
     }
 
     protected getProjectName(projectPath: string): string {
@@ -221,14 +225,6 @@ export class ProjectContribution implements CommandContribution, MenuContributio
             return workspaceRoot.resource;
         }
         throw Error('Cannot create CDT Cloud Project: project creation is not allowed, no workspace opened!');
-    }
-
-    protected async confirmDelete(projectName: string): Promise<boolean> {
-        const canDelete = await new ConfirmDialog({
-            title: 'Delete project',
-            msg: `Do you really want to delete project '${projectName}' and its task configurations?`
-        }).open();
-        return canDelete === true;
     }
 
 }

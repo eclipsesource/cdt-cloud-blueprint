@@ -42,11 +42,6 @@ export function isProjectNode(node: TreeNode): boolean {
     return false;
 }
 
-export function getBuildTaskLabel(projectName: string): string {
-    return `Binary build (${projectName})`;
+export function getBuildTaskLabel(projectName: string, debugBuild = false): string {
+    return `Binary build ${debugBuild ? 'debug' : 'release'} (${projectName})`;
 }
-
-export function getCleanTaskLabel(projectName: string): string {
-    return `Clean example rm build folder (${projectName})`;
-}
-

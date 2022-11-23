@@ -56,25 +56,9 @@ export class CDTCloudFileNavigatorWidget extends FileNavigatorWidget {
         return (
             // tools are ordered as flex: row (left to right in this order)
             <div className='cdt-cloud-project-tool-container'>
-                <div className='tool-item enabled'>
-                    <div className='codicon codicon-trash action-label'
-                        title={ProjectCommands.DELETE_PROJECT.label}
-                        onClick={e => this.handleDeleteIconClicked(e, projectPath)}
-                        data-id={node.id}
-                        id={ProjectCommands.DELETE_PROJECT.id}
-                    />
-                </div>
-                <div className='tool-item enabled'>
-                    <div className='codicon codicon-discard action-label'
-                        title={ProjectCommands.CLEAR_PROJECT.label}
-                        onClick={e => this.handleClearIconClicked(e, projectPath)}
-                        data-id={node.id}
-                        id={ProjectCommands.CLEAR_PROJECT.id}
-                    />
-                </div>
                 {/* TODO: enable tool to run launch config once it is ready */}
-                <div className='tool-item'>
-                    <div className='codicon codicon-debug-alt'
+                <div className='tool-item enabled'>
+                    <div className='codicon codicon-debug-alt action-label'
                         title={ProjectCommands.DEBUG_PROJECT.label}
                         onClick={e => this.handleDebugIconClicked(e, projectPath)}
                         data-id={node.id}
@@ -82,11 +66,27 @@ export class CDTCloudFileNavigatorWidget extends FileNavigatorWidget {
                     />
                 </div>
                 <div className='tool-item enabled'>
-                    <div className='codicon codicon-settings-gear action-label'
+                    <div className='codicon codicon-repo-push action-label'
+                        title={ProjectCommands.FLASH_PROJECT.label}
+                        onClick={e => this.handleFlashIconClicked(e, projectPath)}
+                        data-id={node.id}
+                        id={ProjectCommands.DEBUG_PROJECT.id}
+                    />
+                </div>
+                <div className='tool-item enabled'>
+                    <div className='codicon codicon-file-binary action-label'
                         title={ProjectCommands.BUILD_PROJECT.label}
                         onClick={e => this.handleBuildIconClicked(e, projectPath)}
                         data-id={node.id}
                         id={ProjectCommands.BUILD_PROJECT.id}
+                    />
+                </div>
+                <div className='tool-item enabled'>
+                    <div className='codicon codicon-settings-gear action-label'
+                        title={ProjectCommands.EDIT_PROJECT.label}
+                        onClick={e => this.handleEditIconClicked(e, projectPath)}
+                        data-id={node.id}
+                        id={ProjectCommands.EDIT_PROJECT.id}
                     />
                 </div>
             </div>
@@ -98,19 +98,19 @@ export class CDTCloudFileNavigatorWidget extends FileNavigatorWidget {
         this.commandService.executeCommand(ProjectCommands.BUILD_PROJECT.id, projectPath);
     }
 
-    protected async handleClearIconClicked(e: React.MouseEvent<HTMLDivElement>, projectPath: string): Promise<void> {
-        e.stopPropagation();
-        this.commandService.executeCommand(ProjectCommands.CLEAR_PROJECT.id, projectPath);
-    }
-
     protected async handleDebugIconClicked(e: React.MouseEvent<HTMLDivElement>, projectPath: string): Promise<void> {
         e.stopPropagation();
         this.commandService.executeCommand(ProjectCommands.DEBUG_PROJECT.id, projectPath);
     }
 
-    protected async handleDeleteIconClicked(e: React.MouseEvent<HTMLDivElement>, projectPath: string): Promise<void> {
+    protected async handleEditIconClicked(e: React.MouseEvent<HTMLDivElement>, projectPath: string): Promise<void> {
         e.stopPropagation();
-        this.commandService.executeCommand(ProjectCommands.DELETE_PROJECT.id, projectPath);
+        this.commandService.executeCommand(ProjectCommands.EDIT_PROJECT.id, projectPath);
+    }
+
+    protected async handleFlashIconClicked(e: React.MouseEvent<HTMLDivElement>, projectPath: string): Promise<void> {
+        e.stopPropagation();
+        this.commandService.executeCommand(ProjectCommands.FLASH_PROJECT.id, projectPath);
 
     }
 

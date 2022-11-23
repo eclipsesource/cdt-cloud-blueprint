@@ -24,11 +24,13 @@ import { bindDeviceManager } from './device-manager/device-manager-module-util';
 import { ProjectTreeLabelProviderContribution } from './label-provider';
 import { ProjectContribution } from './project-command-contribution';
 import { bindProjectService } from './project-service/project-service-module-util';
+import { bindToolbarContribution } from './toolbar-contribution';
 
-export default new ContainerModule((bind: interfaces.Bind) => {
+export default new ContainerModule((bind: interfaces.Bind, _unbind: interfaces.Unbind, _isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     bindDeviceManager(bind);
     bindProjectService(bind);
     bindCDTCloudNavigator(bind);
+    bindToolbarContribution(rebind);
 
     bind(LabelProviderContribution).to(ProjectTreeLabelProviderContribution).inSingletonScope();
     bind(CommandContribution).to(ProjectContribution).inSingletonScope();
