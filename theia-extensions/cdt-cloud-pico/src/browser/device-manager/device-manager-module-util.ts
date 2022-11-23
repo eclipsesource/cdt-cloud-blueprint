@@ -14,6 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { bindViewContribution, WebSocketConnectionProvider, WidgetFactory } from '@theia/core/lib/browser';
+import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { interfaces } from '@theia/core/shared/inversify';
 import { DeviceListener, DeviceManagerService, deviceManagerServicePath } from '../../common/device-manager/device-manager-service';
 import { FrontendDeviceListener } from './device-listener';
@@ -27,6 +28,8 @@ export const bindDeviceManager = ((bind: interfaces.Bind) => {
         createWidget: () => context.container.get<DeviceManagerViewWidget>(DeviceManagerViewWidget),
     })).inSingletonScope();
     bindViewContribution(bind, DeviceManagerFrontendContribution);
+
+    bind(TabBarToolbarContribution).toService(DeviceManagerFrontendContribution);
 
     bind(FrontendDeviceListener).toSelf().inSingletonScope();
     bind(DeviceListener).toService(FrontendDeviceListener);

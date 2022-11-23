@@ -24,6 +24,8 @@ import * as React from '@theia/core/shared/react';
 import { DeviceManagerService } from '../../common/device-manager/device-manager-service';
 import { DevicesState, LoadingDevicesList } from './components/devices-list';
 
+export const isDeviceManagerViewWidget = (o: unknown): o is DeviceManagerViewWidget => typeof o === 'object' && o instanceof DeviceManagerViewWidget;
+
 @injectable()
 export class DeviceManagerViewWidget extends ReactWidget {
     static readonly ID = 'device-manager';
@@ -44,7 +46,10 @@ export class DeviceManagerViewWidget extends ReactWidget {
         this.title.iconClass = codicon('circuit-board');
         this.title.closable = true;
         this.update();
+        this.refresh();
+    }
 
+    refresh(): void {
         this.deviceManagerService
             .getAllDevices()
             .then(devices => {

@@ -13,14 +13,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { AbstractViewContribution } from '@theia/core/lib/browser';
-import { DeviceManagerViewWidget } from './device-manager-view-widget';
+import { AbstractViewContribution, codicon } from '@theia/core/lib/browser';
+import { TabBarToolbarContribution, TabBarToolbarRegistry } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { CommandRegistry } from '@theia/core/lib/common/command';
+import { REFRESH__QUICK_PICK, TOGGLE__VIEW } from './device-manager-commands';
+import { DeviceManagerViewWidget, isDeviceManagerViewWidget } from './device-manager-view-widget';
 
-export const OpenDeviceManagerCommand = {
-    id: 'device-manager-view.toggle',
-};
-
-export class DeviceManagerFrontendContribution extends AbstractViewContribution<DeviceManagerViewWidget> {
+export class DeviceManagerFrontendContribution extends AbstractViewContribution<DeviceManagerViewWidget> implements TabBarToolbarContribution {
     constructor() {
         super({
             widgetId: DeviceManagerViewWidget.ID,
@@ -28,7 +27,26 @@ export class DeviceManagerFrontendContribution extends AbstractViewContribution<
             defaultWidgetOptions: {
                 area: 'main',
             },
-            toggleCommandId: OpenDeviceManagerCommand.id,
+            toggleCommandId: TOGGLE__VIEW.id,
+        });
+    }
+    registerCommands(registry: CommandRegistry): void {
+        super.registerCommands(registry);
+        registry.registerCommand(REFRESH__QUICK_PICK, {
+            execute: widget => {
+                if (isDeviceManagerViewWidget(widget)) {
+                    widget.refresh();
+                }
+            },
+            isVisible: widget => isDeviceManagerViewWidget(widget),
+            isEnabled: widget => isDeviceManagerViewWidget(widget)
+        });
+    }
+    registerToolbarItems(registry: TabBarToolbarRegistry): void {
+        registry.registerItem({
+            id: REFRESH__QUICK_PICK.id,
+            command: REFRESH__QUICK_PICK.id,
+            icon: codicon('refresh')
         });
     }
 }
