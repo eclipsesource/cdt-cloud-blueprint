@@ -13,11 +13,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
-import { bindDeviceManager } from './device-manager/device-manager-module-util';
-import { bindProjectService } from './project-service/project-service-module-util';
 
-export default new ContainerModule((bind: interfaces.Bind) => {
-    bindDeviceManager(bind);
-    bindProjectService(bind);
-});
+export enum HardwareType {
+    PICO = 'pico'
+}
+
+export enum ProjectTemplate {
+    EMPTY = 'empty',
+    BLINK = 'blink',
+    DOOROPENER = 'dooropener'
+}

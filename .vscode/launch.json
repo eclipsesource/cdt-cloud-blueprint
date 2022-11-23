@@ -18,6 +18,7 @@
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
+      "preLaunchTask": "Prepare electron example",
       "cwd": "${workspaceFolder}/applications/electron",
       "protocol": "inspector",
       "args": [
@@ -28,10 +29,11 @@
         "--app-project-path=${workspaceFolder}/applications/electron",
         "--remote-debugging-port=9222",
         "--no-app-auto-install",
-        "--plugins=local-dir:plugins"
+        "--plugins=local-dir:./applications/electron/plugins"
       ],
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "PICO_SDK_PATH": "~/pico/pico-sdk"
       },
       "sourceMaps": true,
       "outFiles": [
@@ -49,16 +51,18 @@
       "request": "launch",
       "name": "Launch Browser Backend",
       "program": "${workspaceFolder}/applications/browser/src-gen/backend/main.js",
+      "preLaunchTask": "Prepare browser example",
       "args": [
         "--hostname=0.0.0.0",
         "--port=3000",
         "--no-cluster",
         "--app-project-path=${workspaceFolder}/applications/browser",
-        "--plugins=local-dir:plugins",
+        "--plugins=local-dir:./applications/browser/plugins",
         "--hosted-plugin-inspect=9339"
       ],
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "PICO_SDK_PATH": "~/pico/pico-sdk"
       },
       "sourceMaps": true,
       "outFiles": [

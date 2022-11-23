@@ -13,11 +13,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
-import { bindDeviceManager } from './device-manager/device-manager-module-util';
-import { bindProjectService } from './project-service/project-service-module-util';
+import { injectable } from '@theia/core/shared/inversify';
+import { ProjectClient } from '../../common/project-service';
 
-export default new ContainerModule((bind: interfaces.Bind) => {
-    bindDeviceManager(bind);
-    bindProjectService(bind);
-});
+@injectable()
+export class ProjectFrontendClient implements ProjectClient {
+    // currently unused, could be used to notify client about progress
+}

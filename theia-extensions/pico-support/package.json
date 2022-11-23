@@ -5,6 +5,10 @@
   "dependencies": {
     "@theia/core": "1.30.0",
     "@theia/filesystem": "1.30.0",
+    "@theia/navigator": "1.30.0",
+    "@theia/task": "1.30.0",
+    "@theia/workspace": "1.30.0",
+    "fs-extra": "^10.0.0",
     "inversify": "^5.1.1"
   },
   "devDependencies": {

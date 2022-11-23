@@ -20,3 +20,33 @@
     width: 15px;
     height: 15px;
 }
+
+.p-Menu-itemIcon.cdt-cloud-icon {
+    transform: scale(0.65);
+}
+
+.cdt-cloud-project-tool-container {
+    z-index: var(--theia-tabbar-toolbar-z-index);
+    display: flex;
+    flex-direction: row;
+    margin-right: 4px;
+}
+
+.cdt-cloud-project-tool-container .tool-item {
+    display: flex;
+    align-items: center;
+    margin-left: 4px;
+    opacity: var(--theia-mod-disabled-opacity);
+    cursor: default;
+}
+
+.cdt-cloud-project-tool-container .tool-item.enabled {
+    opacity: 1.0;
+    cursor: pointer;
+}
+
+
+.p-Widget.theia-FileTree.theia-Files .theia-caption-suffix {
+    margin-left: var(--theia-ui-padding);
+    font-size: var(--theia-ui-font-size0);
+}

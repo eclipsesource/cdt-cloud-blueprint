@@ -15,12 +15,23 @@
  ********************************************************************************/
 import '../../src/browser/css/index.css';
 
+import { CommandContribution, MenuContribution } from '@theia/core';
 import { LabelProviderContribution } from '@theia/core/lib/browser/label-provider';
 import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
+
+import { bindCDTCloudNavigator } from './cdt-navigator/navigator-module-util';
 import { bindDeviceManager } from './device-manager/device-manager-module-util';
-import { CDTCloudTreeLabelProviderContribution } from './label-provider';
+import { ProjectTreeLabelProviderContribution } from './label-provider';
+import { ProjectContribution } from './project-command-contribution';
+import { bindProjectService } from './project-service/project-service-module-util';
 
 export default new ContainerModule((bind: interfaces.Bind) => {
     bindDeviceManager(bind);
-    bind(LabelProviderContribution).to(CDTCloudTreeLabelProviderContribution).inSingletonScope();
+    bindProjectService(bind);
+    bindCDTCloudNavigator(bind);
+
+    bind(LabelProviderContribution).to(ProjectTreeLabelProviderContribution).inSingletonScope();
+    bind(CommandContribution).to(ProjectContribution).inSingletonScope();
+    bind(MenuContribution).to(ProjectContribution).inSingletonScope();
+
 });
