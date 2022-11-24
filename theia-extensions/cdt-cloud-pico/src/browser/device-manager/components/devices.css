@@ -1,9 +1,9 @@
 .red {
-  background: #ff0000;
+  background: #f10c0cd2;
 }
 
 .green {
-  background: #00ff00;
+  background: #8fee8f;
 }
 
 .orange {
@@ -14,6 +14,16 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
+}
+
+.devices-ul {
+  padding-right: 10px;
+  list-style-type: none;
+}
+
+.devices-li {
+  padding-bottom: 2px;
+  border: 1px solid lightgray;
 }
 
 .list {
@@ -28,8 +38,30 @@
 
 .list .value {
   text-align: left;
-  padding-left: 2rem;
+  padding-left: 5rem;
   width: 70%;
   display: inline-block;
   box-sizing: border-box;
+}
+
+.device-label {
+  font-weight: bold;
+}
+
+.table-data-device {
+  padding-left: 20px;
+}
+
+.table-data-td {
+  padding-right: 5px;
+}
+
+.title {
+  margin: 10px;
+}
+
+.error-message {
+  padding-top: 1rem;
+  font: italic;
+  color: lightcoral;
 }

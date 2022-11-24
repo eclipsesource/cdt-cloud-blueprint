@@ -57,13 +57,16 @@ export interface DevicesListProps {
 }
 
 export const DevicesList: React.FC<DevicesListProps> = ({ devices }) => (
-    <ul>
-        {devices.map(device => (
-            <li key={device.id}>
+    <div>
+        <h1><span className='title'>Available Devices</span></h1>
+        <ul className='devices-ul'>
+         {devices.map(device => (
+            <li className='devices-li' key={device.id}>
                 <Device device={device} />
             </li>
         ))}
-    </ul>
+        </ul>
+    </div>
 );
 
 interface DeviceProps {
@@ -72,12 +75,14 @@ interface DeviceProps {
 
 const Device: React.FC<DeviceProps> = ({ device }) => (
     <div>
-        <div className="device-header">
-            <div className="device-indicator">
+        <table className="device-header">
+            <tr>
+                <td className="device-label">{device.label}</td>
+                <td className="device-indicator">
                 <DeviceIndicator color={device.connected ? 'green' : 'red'} />
-            </div>
-            <div className="device-label">{device.label}</div>
-        </div>
+                </td>
+            </tr>
+        </table>
         <div className="device-data">
             <DeviceData device={device} />
         </div>
@@ -96,22 +101,22 @@ interface DeviceDataProps {
     device: Device;
 }
 const DeviceData: React.FC<DeviceDataProps> = ({ device }) => (
-    <table>
+    <table className='table-data-device'>
         <tr>
-            <td>Id:</td>
-            <td>{device.id}</td>
+            <td className='table-data-td'>Id:</td>
+            <td className='table-data-td'>{device.id}</td>
         </tr>
         <tr>
-            <td>Connected:</td>
-            <td>{device.connected ? 'yes' : 'no'}</td>
+            <td className='table-data-td'>Connected:</td>
+            <td className='table-data-td'>{device.connected ? 'yes' : 'no'}</td>
         </tr>
         <tr>
-            <td>Flashed Image:</td>
-            <td>{device.image}</td>
+            <td className='table-data-td'>Flashed Image:</td>
+            <td className='table-data-td'>{device.image}</td>
         </tr>
         <tr>
-            <td>State:</td>
-            <td>{device.state}</td>
+            <td className='table-data-td'>State:</td>
+            <td className='table-data-td'>{device.state}</td>
         </tr>
     </table>
 );
