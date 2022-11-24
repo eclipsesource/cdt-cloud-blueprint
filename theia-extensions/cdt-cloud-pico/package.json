@@ -9,6 +9,7 @@
     "@theia/task": "1.30.0",
     "@theia/toolbar": "1.30.0",
     "@theia/workspace": "1.30.0",
+    "@theia/debug": "1.30.0",
     "fs-extra": "^10.0.0",
     "inversify": "^5.1.1"
   },

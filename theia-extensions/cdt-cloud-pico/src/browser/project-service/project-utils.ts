@@ -45,3 +45,7 @@ export function isProjectNode(node: TreeNode): boolean {
 export function getBuildTaskLabel(projectName: string, debugBuild = false): string {
     return `Binary build ${debugBuild ? 'debug' : 'release'} (${projectName})`;
 }
+
+export function getLaunchConfigLabel(projectName: string): string {
+    return `Debug Pico Example (${projectName})`;
+}

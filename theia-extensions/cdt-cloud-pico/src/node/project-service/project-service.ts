@@ -15,6 +15,7 @@
  ********************************************************************************/
 import { Path } from '@theia/core';
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { DebugConfiguration } from '@theia/debug/lib/common/debug-configuration';
 import { TaskConfiguration, TaskInfo, TaskServer } from '@theia/task/lib/common';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { copySync, mkdirSync, rmSync } from 'fs-extra';
@@ -25,9 +26,11 @@ const RESOURCE_DIRECTORY = '../../../../blueprint-example-generator/resources';
 const RESOURCE_THEIA_DIRECTORY = `${RESOURCE_DIRECTORY}/.theia`;
 const RESOURCE_THEIA_SETTINGS = `${RESOURCE_THEIA_DIRECTORY}/settings.json`;
 const RESOURCE_THEIA_TASKS = `${RESOURCE_THEIA_DIRECTORY}/tasks.json`;
+const RESOURCE_THEIA_LAUNCH_CONFIGS = `${RESOURCE_THEIA_DIRECTORY}/launch.json`;
 const WORKSPACE_THEIA_DIRECTORY = '../.theia';
 const WORKSPACE_THEIA_SETTINGS = `${WORKSPACE_THEIA_DIRECTORY}/settings.json`;
 const WORKSPACE_THEIA_TASKS = `${WORKSPACE_THEIA_DIRECTORY}/tasks.json`;
+const WORKSPACE_THEIA_LAUNCH_CONFIGS = `${WORKSPACE_THEIA_DIRECTORY}/launch.json`;
 
 @injectable()
 export class DefaultProjectService implements ProjectService {
@@ -59,6 +62,10 @@ export class DefaultProjectService implements ProjectService {
         const taskConfiguration = this.getProjectTaskConfiguration(projectName);
         // Add theia workspace tasks
         this.addTheiaWorkspaceTasks(taskConfiguration, projectPath);
+        // Create project specific launch configs in workspace
+        const launchConfig = this.getProjectDebugConfiguration(projectName, projectTemplate);
+        // Add launch configuration
+        this.addTheiaWorkspaceLaunchConfiguration(launchConfig, projectPath);
         // Return path to newly created project
         this.triggerCMakeBuild(taskConfiguration, projectPath, projectName);
         return projectPath;
@@ -70,6 +77,8 @@ export class DefaultProjectService implements ProjectService {
         rmSync(projectPath, { recursive: true, force: true });
         // Remove tasks configurations
         this.removeTheiaWorkspaceTasks(projectPath, projectName);
+        // Remove launch configurations
+        this.removeTheiaWorkspaceLaunchConfigs(projectPath, projectName);
     }
 
     protected triggerCMakeBuild(taskConfiguration: TaskConfiguration, projectPath: string, projectName: string): Promise<TaskInfo> {
@@ -186,6 +195,72 @@ export class DefaultProjectService implements ProjectService {
                 theiaWorkspaceTasks.tasks = theiaWorkspaceTasks.tasks.filter((task: { label: string }) => !task.label.endsWith(` (${projectName})`));
             }
             this.writeJSONFile(workspaceTheiaTasksPath.toString(), theiaWorkspaceTasks);
+        }
+    }
+
+    protected getProjectDebugConfiguration(projectName: string, templateProjectName: string): DebugConfiguration {
+        // Uses the provided resource task configuration and updates them to match the project
+        const resourceLaunchConfigsPath = new Path(module.path).resolve(RESOURCE_THEIA_LAUNCH_CONFIGS);
+        if (!resourceLaunchConfigsPath) {
+            throw new Error('Could not resolve paths to resource launch.json file!');
+        }
+        const projectLaunchConfiguration: DebugConfiguration = JSON.parse(readFileSync(resourceLaunchConfigsPath.toString(), { encoding: 'utf8' }));
+        projectLaunchConfiguration.configurations.forEach((configObject: { name: string, program: string, preLaunchTask: string }) => {
+            // Append project name to config label
+            configObject.name = `${configObject.name} (${projectName})`;
+            // Update program path
+            configObject.program = `\${workspaceFolder}/${projectName}/build/${templateProjectName}.elf`;
+            // update preLaunchTask
+            configObject.preLaunchTask = `Binary build debug (${projectName})`;
+        });
+        return projectLaunchConfiguration;
+    }
+
+    protected getTheiaWorkspaceLaunchConfiguration(workspaceTheiaLaunchConfigsPath: string): DebugConfiguration {
+        // If launch configs exist, the might have comments, as Theia creates a JSONc (JSON with comments) file by default
+        // To be able to parse the JSON object, we need to skip the comments
+        const matchJSONComments = new RegExp(/\/\/.*/, 'gi');
+        const fileContent = readFileSync(workspaceTheiaLaunchConfigsPath, { encoding: 'utf8' });
+        const filteredFileContent = fileContent.replace(matchJSONComments, '').trim();
+        return JSON.parse(filteredFileContent) as DebugConfiguration;
+    }
+
+    protected addTheiaWorkspaceLaunchConfiguration(config: DebugConfiguration, projectPath: string): void {
+        const resourceLaunchConfigsPath = new Path(module.path).resolve(RESOURCE_THEIA_LAUNCH_CONFIGS);
+        const workspaceTheiaLaunchConfigsPath = new Path(projectPath).resolve(WORKSPACE_THEIA_LAUNCH_CONFIGS);
+        if (!resourceLaunchConfigsPath || !workspaceTheiaLaunchConfigsPath) {
+            throw new Error('Could not resolve paths to launch.json files!');
+        }
+
+        // Init empty launch.json file if workspace does not have tasks yet
+        if (!existsSync(workspaceTheiaLaunchConfigsPath.toString())) {
+            this.writeJSONFile(workspaceTheiaLaunchConfigsPath.toString(), { version: '2.0.0', configurations: [] });
+        }
+
+        // Create project specific launch configs to existing workspace launch.json
+        let theiaWorkspaceLaunchConfigs: DebugConfiguration = this.getTheiaWorkspaceLaunchConfiguration(workspaceTheiaLaunchConfigsPath.toString());
+        if (!theiaWorkspaceLaunchConfigs.configurations) {
+            theiaWorkspaceLaunchConfigs = { ...theiaWorkspaceLaunchConfigs, 'configurations': config.configurations };
+        } else {
+            theiaWorkspaceLaunchConfigs.configurations.push(...config.configurations);
+        }
+        this.writeJSONFile(workspaceTheiaLaunchConfigsPath.toString(), theiaWorkspaceLaunchConfigs);
+    }
+
+    protected removeTheiaWorkspaceLaunchConfigs(projectPath: string, projectName: string): void {
+        const workspaceTheiaLaunchConfigsPath = new Path(projectPath).resolve(WORKSPACE_THEIA_LAUNCH_CONFIGS);
+        if (!workspaceTheiaLaunchConfigsPath) {
+            throw new Error('Could not resolve path to workspace launch.json files!');
+        }
+
+        if (existsSync(workspaceTheiaLaunchConfigsPath.toString())) {
+            // Remove project specific launch configs from existing workspace launch.json
+            const theiaWorkspaceLaunchConfigs: DebugConfiguration = this.getTheiaWorkspaceLaunchConfiguration(workspaceTheiaLaunchConfigsPath.toString());
+            if (theiaWorkspaceLaunchConfigs.configurations) {
+                theiaWorkspaceLaunchConfigs.configurations =
+                    theiaWorkspaceLaunchConfigs.configurations.filter((config: { name: string }) => !config.name.endsWith(` (${projectName})`));
+            }
+            this.writeJSONFile(workspaceTheiaLaunchConfigsPath.toString(), theiaWorkspaceLaunchConfigs);
         }
     }
 

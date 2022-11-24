@@ -28,6 +28,9 @@ import {
 } from '@theia/core';
 import { CommonMenus, OpenerService, PreferenceService } from '@theia/core/lib/browser';
 import URI from '@theia/core/lib/common/uri';
+import { DebugConfigurationManager } from '@theia/debug/lib/browser/debug-configuration-manager';
+import { DebugCommands } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
+import { DebugService } from '@theia/debug/lib/common/debug-service';
 import { FileNavigatorCommands, NavigatorContextMenu } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TaskService } from '@theia/task/lib/browser/task-service';
 import { PanelKind, RevealKind, TaskConfiguration, TaskInfo, TaskScope } from '@theia/task/lib/common';
@@ -90,6 +93,12 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     protected readonly taskService: TaskService;
     @inject(WorkspaceService)
     protected readonly workspaceService: WorkspaceService;
+    @inject(DebugService)
+    protected readonly debugService: DebugService;
+    @inject(DebugConfigurationManager)
+    protected readonly debugManager: DebugConfigurationManager;
+    @inject(CommandRegistry)
+    protected readonly commandRegistry: CommandRegistry;
 
     protected currentOpenOCDTask: TaskInfo | undefined;
 
@@ -228,9 +237,14 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     protected async debugProject(projectPath: string): Promise<void> {
         const workspaceRoot = (await this.getWorkspaceRoot()).toString();
         const projectName = this.getProjectName(projectPath);
-        this.taskService.runConfiguredTask(this.taskService.startUserAction(), workspaceRoot, ProjectUtils.getBuildTaskLabel(projectName, true /* debugBuild*/));
-        // TODO: run launch config once its ready
-        this.messageService.warn('Build in debug mode, TODO: should start debug project');
+        const configurationName = ProjectUtils.getLaunchConfigLabel(projectName);
+        const configuration = this.debugManager.findConfiguration(configurationName, workspaceRoot);
+        if (configuration) {
+            this.debugService.createDebugSession(configuration, workspaceRoot);
+            this.commandRegistry.executeCommand(DebugCommands.START.id, this.debugManager.current);
+        } else {
+            this.messageService.warn('Could not find configuration to launch.');
+        }
     }
 
     protected async editProject(projectPath: string): Promise<void> {
@@ -277,6 +291,10 @@ export class ProjectContribution implements CommandContribution, MenuContributio
             return workspaceRoot.resource;
         }
         throw Error('Cannot create CDT Cloud Project: project creation is not allowed, no workspace opened!');
+    }
+
+    protected findProgramExecutablePath(projectPath: string, projectName: string): string {
+        return `${projectPath}/build/${projectName}.elf`;
     }
 
     protected createTaskConfiguration(label: string, command: string): TaskConfiguration {

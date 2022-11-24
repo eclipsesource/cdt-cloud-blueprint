@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Pico Example",
+      "type": "gdbtarget",
+      "request": "attach",
+      "program": "${workspaceFolder}/${command:askProgramPath}",
+      "gdb": "gdb-multiarch",
+      "target": {
+        "host": "127.0.0.1",
+        "port": "3333"
+      }
+    }
+  ]
+}
