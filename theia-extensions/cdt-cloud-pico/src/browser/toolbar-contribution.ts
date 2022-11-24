@@ -55,8 +55,8 @@ export const ToolbarDefaultsOverride: () => DeflatedToolbarTree = () => ({
         [ToolbarAlignment.RIGHT]: [
             [
                 {
-                    id: 'device-manager-view.toggle',
-                    command: 'device-manager-view.toggle',
+                    id: 'device-manager:toggle-view',
+                    command: 'device-manager:toggle-view',
                     icon: 'codicon codicon-circuit-board'
                 },
                 {
