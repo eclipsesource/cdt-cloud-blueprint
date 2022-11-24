@@ -97,7 +97,7 @@ export class PicoWelcomeWidget extends ReactWidget {
                     <div className='pico-col'>
                         {this.renderFeatureSection(
                             'Edit Project C Code',
-                            'codicon codicon-settings-gear',
+                            'codicon codicon-file-code',
                             <p>
                                 To edit the project's C file, open the <code>src/blink.c</code> file in the file explorer
                                 or use the action item below.
@@ -172,9 +172,11 @@ export class PicoWelcomeWidget extends ReactWidget {
                         )}
                     </div>
                 </div>
-                <div className='pico-flex-grid'>
-                    <div className='pico-col'>{this.renderVersion()}</div>
-                </div>
+                {this.applicationInfo &&
+                    <div className='pico-flex-grid'>
+                        <div className='pico-col'>{this.renderVersion()}</div>
+                    </div>
+                }
             </div >
         );
     }
@@ -192,7 +194,7 @@ export class PicoWelcomeWidget extends ReactWidget {
                     Alternatively, use the toolbar on top, right below the main menu bar.
                     <br />
                     The following feature sections describe the needed steps to create, build and debug the dooropener example on your Pico device.
-                    They also offer an action to execute those steps automatically, they are indicated by this icon: <i className={'codicon codicon-play-circle'} />.
+                    They also offer an action to execute those steps automatically, they are indicated by this icon: <i className={'codicon codicon-arrow-circle-right'} />.
                 </p>
             </div>
         );
@@ -226,7 +228,7 @@ export class PicoWelcomeWidget extends ReactWidget {
             <div className='pico-gs-section'>
                 <div className='pico-gs-action-container'>
                     <p className='pico-gs-sub-header pico-gs-version'>
-                        cdt-cloud-pico Version {this.applicationInfo ? this.applicationInfo.version : '1.30.0'}
+                        {this.applicationInfo && `${this.applicationInfo.name} - Version: ${this.applicationInfo.version}`}
                     </p>
                 </div>
             </div>
