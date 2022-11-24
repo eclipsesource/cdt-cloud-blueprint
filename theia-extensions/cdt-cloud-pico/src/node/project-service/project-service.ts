@@ -205,13 +205,15 @@ export class DefaultProjectService implements ProjectService {
             throw new Error('Could not resolve paths to resource launch.json file!');
         }
         const projectLaunchConfiguration: DebugConfiguration = JSON.parse(readFileSync(resourceLaunchConfigsPath.toString(), { encoding: 'utf8' }));
-        projectLaunchConfiguration.configurations.forEach((configObject: { name: string, program: string, preLaunchTask: string }) => {
+        projectLaunchConfiguration.configurations.forEach((configObject: { name: string, program: string, preLaunchTask: string, initCommands: string[] }) => {
             // Append project name to config label
             configObject.name = `${configObject.name} (${projectName})`;
             // Update program path
             configObject.program = `\${workspaceFolder}/${projectName}/build/${templateProjectName}.elf`;
             // update preLaunchTask
             configObject.preLaunchTask = `Binary build debug (${projectName})`;
+            // update init commands - add command to load executable on device
+            configObject.initCommands.push(`load \${workspaceFolder}/${projectName}/build/${templateProjectName}.elf`);
         });
         return projectLaunchConfiguration;
     }
