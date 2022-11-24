@@ -40,6 +40,10 @@
     cursor: default;
 }
 
+.cdt-cloud-project-tool-container .tool-item > .codicon {
+    color: var(--theia-sideBar-foreground);
+}
+
 .cdt-cloud-project-tool-container .tool-item.enabled {
     opacity: 1.0;
     cursor: pointer;
