@@ -259,11 +259,12 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     }
 
     protected async startOpenOCD(): Promise<void> {
-        // No need to check if task is running, taskService does this by activating the running task and prompting the user to restart or terminate if desired
-        const openOCDPath = this.preferenceService.get<string>(OPEN_OCD_PATH_SETTING_ID);
-        const openOCDCommand = `${openOCDPath}/src/openocd -s ${openOCDPath}/tcl -f interface/picoprobe.cfg -f target/rp2040.cfg`;
-        this.currentOpenOCDTask = await this.taskService.runTask(
-            this.createTaskConfiguration('Start OpenOCD', openOCDCommand));
+        if (!this.currentOpenOCDTask) {
+            const openOCDPath = this.preferenceService.get<string>(OPEN_OCD_PATH_SETTING_ID);
+            const openOCDCommand = `${openOCDPath}/src/openocd -s ${openOCDPath}/tcl -f interface/picoprobe.cfg -f target/rp2040.cfg`;
+            this.currentOpenOCDTask = await this.taskService.runTask(
+                this.createTaskConfiguration('Start OpenOCD', openOCDCommand));
+        }
     }
 
     protected async stopOpenOCD(): Promise<void> {
