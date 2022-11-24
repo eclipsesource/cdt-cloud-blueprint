@@ -203,7 +203,7 @@ export class ProjectEditorWidget extends ReactWidget implements NavigatableWidge
     protected async saveProjectSettings(): Promise<void> {
         this.fileService.writeFile(
             this.projectSettingsUri,
-            BinaryBuffer.fromString(JSON.stringify(this.projectSettings))
+            BinaryBuffer.fromString(JSON.stringify(this.projectSettings, undefined, 2))
         );
         this.update();
     }
