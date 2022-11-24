@@ -95,7 +95,16 @@ export class ProjectContribution implements CommandContribution, MenuContributio
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(ProjectCommands.CREATE_PROJECT, {
-            execute: () => this.createProject(),
+            execute: args => {
+                if (Array.isArray(args) && args.length > 2) {
+                    const projectName = args[0];
+                    const hardwareType = args[1] as HardwareType;
+                    const projectTemplate = args[2] as ProjectTemplate;
+                    this.doCreateProject(projectName, hardwareType, projectTemplate);
+                } else {
+                    this.createProjectViaQuickInput();
+                }
+            },
             isEnabled: () => this.isProjectCreationAllowed(),
             isVisible: () => this.isProjectCreationAllowed()
         });
@@ -149,7 +158,7 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         return this.workspaceService.tryGetRoots().length > 0;
     }
 
-    protected async createProject(): Promise<void> {
+    protected async createProjectViaQuickInput(): Promise<void> {
         // QuickInput project name (name of project directory)
         const inputProjectName = await this.quickInputService.input({
             prompt: 'Enter CDT Cloud Project Name',
@@ -197,9 +206,13 @@ export class ProjectContribution implements CommandContribution, MenuContributio
             throw Error('Cannot create CDT Cloud Project: projectTemplate is missing!');
         }
 
+        this.doCreateProject(inputProjectName, selectedHardwareType.value, selectedProjectTemplate.value);
+    }
+
+    protected async doCreateProject(projectName: string, hardwareType: HardwareType, projectTemplate: ProjectTemplate): Promise<void> {
         // Create CDT CLoud project via project service
         const workspacePath = (await this.getWorkspaceRoot()).path.toString();
-        const projectPath = await this.projectService.createProject(workspacePath, inputProjectName, selectedHardwareType.value, selectedProjectTemplate.value);
+        const projectPath = await this.projectService.createProject(workspacePath, projectName, hardwareType, projectTemplate);
 
         // Refresh navigator and reveal newly created project
         await this.commandService.executeCommand(FileNavigatorCommands.REFRESH_NAVIGATOR.id);

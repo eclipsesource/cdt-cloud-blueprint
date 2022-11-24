@@ -17,6 +17,9 @@
     "tslint": "^5.12.0",
     "typescript": "^4.5.5"
   },
+  "peerDependencies": {
+    "react": "^16.8.0"
+  },
   "theiaExtensions": [
     {
       "frontendElectron": "lib/browser/frontend-module",
