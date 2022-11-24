@@ -54,3 +54,87 @@
     margin-left: var(--theia-ui-padding);
     font-size: var(--theia-ui-font-size0);
 }
+
+.cdt-cloud-project-settings {
+    padding: var(--theia-ui-padding);
+}
+
+.cdt-cloud-project-settings {
+    height: 50px;
+}
+
+.cdt-cloud-project-settings h1 {
+    font-weight: normal;
+    padding: 0.5em 0.2em;
+    margin: 0;
+}
+
+.cdt-cloud-project-settings h1 span.value {
+    padding-left: 0.3em;
+    color: var(--theia-textLink-activeForeground);
+}
+
+.cdt-cloud-project-settings .pico-logo {
+    height: 279px;
+    width: 110px;
+    background-image: url('../resources/pico-board.jpg');
+    border-radius: 10px;
+    position: absolute;
+    top: 80px;
+    right: 38px;
+}
+
+.cdt-cloud-project-settings .header {
+    height: 60px;
+}
+
+.cdt-cloud-project-settings .buttonsContainer {
+    position: absolute;
+    right: 40px;
+    top: 15px;
+}
+
+.cdt-cloud-project-settings .buttonsContainer button {
+    min-width: 25px;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    margin: 0 0 10px 10px;
+    line-height: 0;
+    border-radius: 5px
+}
+
+.cdt-cloud-project-settings .settings-container {
+    padding-left: 0.5em;
+}
+
+.cdt-cloud-project-settings .setting-item-header h3 {
+    margin: 1em 0 0 0;
+}
+
+.cdt-cloud-project-settings .setting-item-description p {
+    margin: 0.5em 0.5em 0.5em 0;
+}
+
+.cdt-cloud-project-settings .setting-item-description {
+    color: var(--theia-descriptionForeground);
+}
+
+.cdt-cloud-project-settings .theia-select-component {
+    background-color: inherit;
+    outline: none;
+    padding: 0;
+}
+
+.cdt-cloud-project-settings input {
+    border: 1px solid var(--theia-dropdown-border);
+}
+
+.cdt-cloud-project-settings select,
+.cdt-cloud-project-settings input {
+    width: 100%;
+    max-width: 270px;
+}
+
+.cdt-cloud-project-settings select {
+    background-color: var(--theia-dropdown-background);
+    color: var(--theia-dropdown-foreground);
+}

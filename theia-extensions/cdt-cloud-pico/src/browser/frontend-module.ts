@@ -25,6 +25,7 @@ import { ProjectTreeLabelProviderContribution } from './label-provider';
 import { bindPicoWelcomeWidget } from './pico-getting-started/frontend-module-util';
 import { bindPicoPreferences } from './preferences';
 import { ProjectContribution } from './project-command-contribution';
+import { bindProjectEditor } from './project-editor/project-editor-module-util';
 import { bindProjectService } from './project-service/project-service-module-util';
 import { bindToolbarContribution } from './toolbar-contribution';
 
@@ -35,9 +36,9 @@ export default new ContainerModule((bind: interfaces.Bind, _unbind: interfaces.U
     bindToolbarContribution(rebind);
     bindPicoPreferences(bind);
     bindPicoWelcomeWidget(bind);
+    bindProjectEditor(bind);
 
     bind(LabelProviderContribution).to(ProjectTreeLabelProviderContribution).inSingletonScope();
     bind(CommandContribution).to(ProjectContribution).inSingletonScope();
     bind(MenuContribution).to(ProjectContribution).inSingletonScope();
-
 });
