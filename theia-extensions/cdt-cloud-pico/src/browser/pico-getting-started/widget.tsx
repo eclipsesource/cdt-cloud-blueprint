@@ -152,7 +152,7 @@ export class PicoWelcomeWidget extends ReactWidget {
                             'Device Manager',
                             'codicon codicon-circuit-board',
                             <p>
-                                The Pico Device Manager listst the currently connected Pico devices and shows additional information such as connection status or the flashed image.
+                                The Pico Device Manager lists the currently connected Pico devices and shows additional information such as connection status or the flashed image.
                                 <br />
                                 {this.renderActionItem('Toggle the Pico Device Manager', this.toggleDeviceManagerView)}
                             </p>
@@ -165,9 +165,7 @@ export class PicoWelcomeWidget extends ReactWidget {
                             'OpenOCD',
                             'codicon codicon-arrow-swap',
                             <p>
-                                To generate an E2Project, the diagram editor with a valid board configuration has to be opened &#40;please
-                                see section above&#41;. To trigger the E2Project generation, click the toolbar icon{' '}
-                                <i className={'codicon codicon-file-code'} /> or the action item below. <br />
+                                To start or stop OpenOCD, use commands from the command palette or click the action item below. <br />
                                 {this.renderActionItem('Start OpenOCD', this.startOpenOCD, 'play-circle')}
                                 {this.renderActionItem('Stop OpenOCD', this.stopOpenOCD, 'stop-circle')}
                             </p>
