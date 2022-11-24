@@ -74,7 +74,7 @@ export class CDTCloudFileNavigatorWidget extends FileNavigatorWidget {
                     />
                 </div>
                 <div className='tool-item enabled'>
-                    <div className='codicon codicon-file-binary action-label'
+                    <div className='codicon codicon-symbol-property action-label'
                         title={ProjectCommands.BUILD_PROJECT.label}
                         onClick={e => this.handleBuildIconClicked(e, projectPath)}
                         data-id={node.id}
