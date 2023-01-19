@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -24,11 +24,9 @@ import { HardwareType, ProjectTemplate } from '../../common/project-types';
 
 const RESOURCE_DIRECTORY = '../../../../blueprint-example-generator/resources';
 const RESOURCE_THEIA_DIRECTORY = `${RESOURCE_DIRECTORY}/.theia`;
-const RESOURCE_THEIA_SETTINGS = `${RESOURCE_THEIA_DIRECTORY}/settings.json`;
 const RESOURCE_THEIA_TASKS = `${RESOURCE_THEIA_DIRECTORY}/tasks.json`;
 const RESOURCE_THEIA_LAUNCH_CONFIGS = `${RESOURCE_THEIA_DIRECTORY}/launch.json`;
 const WORKSPACE_THEIA_DIRECTORY = '../.theia';
-const WORKSPACE_THEIA_SETTINGS = `${WORKSPACE_THEIA_DIRECTORY}/settings.json`;
 const WORKSPACE_THEIA_TASKS = `${WORKSPACE_THEIA_DIRECTORY}/tasks.json`;
 const WORKSPACE_THEIA_LAUNCH_CONFIGS = `${WORKSPACE_THEIA_DIRECTORY}/launch.json`;
 
@@ -56,8 +54,6 @@ export class DefaultProjectService implements ProjectService {
         this.copyTemplateProject(projectPath, hardwareType, projectTemplate);
         // Create .cdtcloud project file
         this.createCDTCloudProjectFile(projectPath, hardwareType);
-        // Add theia workspace settings
-        this.addTheiaWorkspaceSettings(projectPath);
         // Create project specific tasks in workspace
         const taskConfiguration = this.getProjectTaskConfiguration(projectName);
         // Add theia workspace tasks
@@ -116,32 +112,6 @@ export class DefaultProjectService implements ProjectService {
             throw new Error('Could not resolve .cdtcloud path!');
         }
         this.writeJSONFile(projectFilePath.toString(), projectJsonObject);
-    }
-
-    protected addTheiaWorkspaceSettings(projectPath: string): void {
-        // Add workspace settings
-        const resourceSettingsPath = new Path(module.path).resolve(RESOURCE_THEIA_SETTINGS);
-        const theiaWorkspaceSettingsPath = new Path(projectPath).resolve(WORKSPACE_THEIA_SETTINGS);
-        if (!resourceSettingsPath || !theiaWorkspaceSettingsPath) {
-            throw new Error('Could not resolve paths to settings.json files!');
-        }
-
-        if (!existsSync(theiaWorkspaceSettingsPath.toString())) {
-            // Copy settings.json if workspace does not have settings yet
-            copySync(resourceSettingsPath.toString(), theiaWorkspaceSettingsPath.toString());
-        } else {
-            let theiaWorkspaceSettings = JSON.parse(readFileSync(theiaWorkspaceSettingsPath.toString(), { encoding: 'utf8' }));
-            if (!('files.associations' in theiaWorkspaceSettings)) {
-                // Add JSON file association setting for .cdtcloud files
-                theiaWorkspaceSettings = { ...theiaWorkspaceSettings, 'files.associations': { '*.cdtcloud': 'json' } };
-                this.writeJSONFile(theiaWorkspaceSettingsPath.toString(), theiaWorkspaceSettings);
-            };
-            if (!('cmake.configureOnOpen' in theiaWorkspaceSettings)) {
-                // Add automatic cmake project configuration on open
-                theiaWorkspaceSettings = { ...theiaWorkspaceSettings, 'cmake.configureOnOpen': true };
-                this.writeJSONFile(theiaWorkspaceSettingsPath.toString(), theiaWorkspaceSettings);
-            };
-        }
     }
 
     protected getProjectTaskConfiguration(projectName: string): TaskConfiguration {

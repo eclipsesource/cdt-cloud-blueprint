@@ -1,6 +1,0 @@
-{
-  "files.associations": {
-    "*.cdtcloud": "json"
-  },
-  "cmake.configureOnOpen": true
-}

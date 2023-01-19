@@ -28,7 +28,11 @@
       "config": {
         "applicationName": "CDTCloudBlueprint",
         "preferences": {
-          "toolbar.showToolbar": true
+          "toolbar.showToolbar": true,
+          "files.associations": {
+            "*.cdtcloud": "json"
+          },
+          "cmake.configureOnOpen": true
         }
       }
     },
@@ -117,7 +121,7 @@
     "yargs": "17.2.1"
   },
   "scripts": {
-    "prepare": "yarn build && yarn download:plugins",
+    "prepare": "yarn build ",
     "clean": "theia clean && rimraf node_modules",
     "clean:dist": "rimraf dist",
     "build": "yarn -s compile && yarn -s bundle",
