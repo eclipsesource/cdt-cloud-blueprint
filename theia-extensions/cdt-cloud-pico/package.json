@@ -1,15 +1,15 @@
 {
   "name": "@eclipse-cdt-cloud/cdt-cloud-pico",
-  "version": "1.30.0",
+  "version": "1.31.1",
   "description": "Extension for generating Raspberry Pi Pico examples in CDT.cloud blueprint",
   "dependencies": {
-    "@theia/core": "1.30.0",
-    "@theia/filesystem": "1.30.0",
-    "@theia/navigator": "1.30.0",
-    "@theia/task": "1.30.0",
-    "@theia/toolbar": "1.30.0",
-    "@theia/workspace": "1.30.0",
-    "@theia/debug": "1.30.0",
+    "@theia/core": "1.31.1",
+    "@theia/filesystem": "1.31.1",
+    "@theia/navigator": "1.31.1",
+    "@theia/task": "1.31.1",
+    "@theia/toolbar": "1.31.1",
+    "@theia/workspace": "1.31.1",
+    "@theia/debug": "1.31.1",
     "fs-extra": "^10.0.0",
     "inversify": "^5.1.1"
   },
