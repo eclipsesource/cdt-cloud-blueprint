@@ -37,6 +37,7 @@
       },
       "sourceMaps": true,
       "outFiles": [
+        "${workspaceRoot}/node_modules/@theia/*/lib/**/*.js",
         "${workspaceFolder}/applications/electron/src-gen/frontend/electron-main.js",
         "${workspaceFolder}/applications/electron/src-gen/backend/main.js",
         "${workspaceFolder}/applications/electron/lib/**/*.js",
@@ -66,6 +67,7 @@
       },
       "sourceMaps": true,
       "outFiles": [
+        "${workspaceRoot}/node_modules/@theia/*/lib/**/*.js",
         "${workspaceFolder}/applications/browser/src-gen/backend/*.js",
         "${workspaceFolder}/applications/browser/lib/**/*.js",
         "${workspaceFolder}/theia-extensions/*/lib/**/*.js"
