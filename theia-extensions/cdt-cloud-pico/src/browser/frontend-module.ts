@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -19,10 +19,8 @@ import { CommandContribution, MenuContribution } from '@theia/core';
 import { LabelProviderContribution } from '@theia/core/lib/browser/label-provider';
 import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
 
-import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { bindCDTCloudNavigator } from './cdt-navigator/navigator-module-util';
 import { bindDeviceManager } from './device-manager/device-manager-module-util';
-import { ProjectFrontendContribution } from './frontend-contribution';
 import { ProjectTreeLabelProviderContribution } from './label-provider';
 import { bindPicoWelcomeWidget } from './pico-getting-started/frontend-module-util';
 import { bindPicoPreferences } from './preferences';
@@ -40,8 +38,6 @@ export default new ContainerModule((bind: interfaces.Bind, _unbind: interfaces.U
     bindPicoWelcomeWidget(bind);
     bindProjectEditor(bind);
 
-    bind(ProjectFrontendContribution).toSelf().inSingletonScope();
-    bind(FrontendApplicationContribution).toService(ProjectFrontendContribution);
     bind(LabelProviderContribution).to(ProjectTreeLabelProviderContribution).inSingletonScope();
     bind(CommandContribution).to(ProjectContribution).inSingletonScope();
     bind(MenuContribution).to(ProjectContribution).inSingletonScope();

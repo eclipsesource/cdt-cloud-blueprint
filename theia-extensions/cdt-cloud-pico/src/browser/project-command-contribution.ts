@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -34,6 +34,7 @@ import { DebugService } from '@theia/debug/lib/common/debug-service';
 import { FileNavigatorCommands, NavigatorContextMenu } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TaskService } from '@theia/task/lib/browser/task-service';
 import { PanelKind, RevealKind, TaskConfiguration, TaskInfo, TaskScope } from '@theia/task/lib/common';
+import { TerminalService } from '@theia/terminal/lib/browser/base/terminal-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser';
 import { inject, injectable } from 'inversify';
 
@@ -72,6 +73,14 @@ export namespace ProjectCommands {
         id: 'cdtcloud.pico.openocd.stop',
         label: 'Stop OpenOCD'
     };
+    export const START_MINICOM: Command = {
+        id: 'cdtcloud.pico.minicom.start',
+        label: 'Start Minicom'
+    };
+    export const STOP_MINICOM: Command = {
+        id: 'cdtcloud.pico.minicom.stop',
+        label: 'Stop Minicom'
+    };
 }
 
 @injectable()
@@ -92,6 +101,8 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     protected readonly selectionService: SelectionService;
     @inject(TaskService)
     protected readonly taskService: TaskService;
+    @inject(TerminalService)
+    protected readonly terminalService: TerminalService;
     @inject(WorkspaceService)
     protected readonly workspaceService: WorkspaceService;
     @inject(DebugService)
@@ -100,8 +111,6 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     protected readonly debugManager: DebugConfigurationManager;
     @inject(CommandRegistry)
     protected readonly commandRegistry: CommandRegistry;
-
-    protected currentOpenOCDTask: TaskInfo | undefined;
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(ProjectCommands.CREATE_PROJECT, {
@@ -145,6 +154,16 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         });
         registry.registerCommand(ProjectCommands.STOP_OPENOCD, {
             execute: () => this.stopOpenOCD(),
+            isEnabled: () => true,
+            isVisible: () => true
+        });
+        registry.registerCommand(ProjectCommands.START_MINICOM, {
+            execute: () => this.startMinicom(),
+            isEnabled: () => true,
+            isVisible: () => true
+        });
+        registry.registerCommand(ProjectCommands.STOP_MINICOM, {
+            execute: () => this.stopMinicom(),
             isEnabled: () => true,
             isVisible: () => true
         });
@@ -265,20 +284,75 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         this.messageService.warn('TODO: Will flash project to device');
     }
 
-    protected async startOpenOCD(): Promise<void> {
-        if (!this.currentOpenOCDTask) {
-            const openOCDPath = this.preferenceService.get<string>(OPEN_OCD_PATH_SETTING_ID);
-            const openOCDCommand = `${openOCDPath}/src/openocd -s ${openOCDPath}/tcl -f interface/picoprobe.cfg -f target/rp2040.cfg`;
-            this.currentOpenOCDTask = await this.taskService.runTask(
-                this.createTaskConfiguration('Start OpenOCD', openOCDCommand));
+    protected async getRunningTaskByLabel(taskLabel: string): Promise<TaskInfo | undefined> {
+        const runningTasks: TaskInfo[] = await this.taskService.getRunningTasks();
+        if (runningTasks.length > 0) {
+            for (const task of runningTasks) {
+                if (task.config.label === taskLabel) {
+                    return task;
+                }
+            }
+        }
+        return undefined;
+    }
+
+    protected async startTask(taskLabel: string, taskCommand: string): Promise<void> {
+        const runningTask = await this.getRunningTaskByLabel(taskLabel);
+        if (runningTask && runningTask.terminalId) {
+            const terminal = this.terminalService.getByTerminalId(runningTask.terminalId);
+            if (terminal) {
+                this.terminalService.open(terminal, { mode: 'reveal' });
+            }
+            return;
+        }
+        await this.taskService.runTask(
+            this.createTaskConfiguration(taskLabel, taskCommand));
+    }
+
+    protected async stopTask(taskLabel: string): Promise<void> {
+        const runningTask = await this.getRunningTaskByLabel(taskLabel);
+        if (runningTask) {
+            await this.taskService.terminateTask(runningTask);
         }
     }
 
+    protected get openOCDTaskLabel(): string {
+        return 'OpenOCD';
+    }
+
+    protected async startOpenOCD(): Promise<void> {
+        const openOCDPath = this.preferenceService.get<string>(OPEN_OCD_PATH_SETTING_ID);
+        const openOCDCommand = `${openOCDPath}/src/openocd -s ${openOCDPath}/tcl -f interface/picoprobe.cfg -f target/rp2040.cfg`;
+        this.startTask(this.openOCDTaskLabel, openOCDCommand);
+    }
+
     protected async stopOpenOCD(): Promise<void> {
-        if (this.currentOpenOCDTask) {
-            await this.taskService.terminateTask(this.currentOpenOCDTask);
-            this.currentOpenOCDTask = undefined;
+        this.stopTask(this.openOCDTaskLabel);
+    }
+
+    protected get minicomTaskLabel(): string {
+        return 'Minicom';
+    }
+
+    protected async getRunningMinicomTask(): Promise<TaskInfo | undefined> {
+        const runningTasks: TaskInfo[] = await this.taskService.getRunningTasks();
+        if (runningTasks.length > 0) {
+            for (const task of runningTasks) {
+                if (task.config.label === this.minicomTaskLabel) {
+                    return task;
+                }
+            }
         }
+        return undefined;
+    }
+
+    protected async startMinicom(): Promise<void> {
+        const minicomCommand = 'minicom -D /dev/ttyACM0 -b 115200';
+        this.startTask(this.minicomTaskLabel, minicomCommand);
+    }
+
+    protected async stopMinicom(): Promise<void> {
+        this.stopTask(this.minicomTaskLabel);
     }
 
     protected getProjectName(projectPath: string): string {

@@ -7,6 +7,7 @@
     "@theia/filesystem": "1.31.1",
     "@theia/navigator": "1.31.1",
     "@theia/task": "1.31.1",
+    "@theia/terminal": "1.31.1",
     "@theia/toolbar": "1.31.1",
     "@theia/workspace": "1.31.1",
     "@theia/debug": "1.31.1",

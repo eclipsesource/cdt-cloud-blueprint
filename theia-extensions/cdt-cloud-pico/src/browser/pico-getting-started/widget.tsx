@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -172,6 +172,21 @@ export class PicoWelcomeWidget extends ReactWidget {
                         )}
                     </div>
                 </div>
+                <div className='pico-flex-grid'>
+                    <div className='pico-col'>
+                        {this.renderFeatureSection(
+                            'Minicom',
+                            'codicon codicon-output',
+                            <p>
+                                To start or stop Minicom, use commands from the command palette or click the action item below. <br />
+                                <b><i>Remark:</i></b> Minicom usually requires root privileges to run. Please check the prerequisites section above for more details.<br />
+                                {this.renderActionItem('Start Minicom', this.startMinicom, 'play-circle')}
+                                {this.renderActionItem('Stop Minicom', this.stopMinicom, 'stop-circle')}
+                                To exit <code>minicom</code> manually in the terminal, use <kbd>CTRL+A</kbd> followed by <kbd>X</kbd> and <kbd>Enter</kbd>.
+                            </p>
+                        )}
+                    </div>
+                </div>
                 {this.applicationInfo &&
                     <div className='pico-flex-grid'>
                         <div className='pico-col'>{this.renderVersion()}</div>
@@ -291,6 +306,14 @@ export class PicoWelcomeWidget extends ReactWidget {
 
     protected stopOpenOCD = (): void => {
         this.commandRegistry.executeCommand(ProjectCommands.STOP_OPENOCD.id);
+    };
+
+    protected startMinicom = (): void => {
+        this.commandRegistry.executeCommand(ProjectCommands.START_MINICOM.id);
+    };
+
+    protected stopMinicom = (): void => {
+        this.commandRegistry.executeCommand(ProjectCommands.STOP_MINICOM.id);
     };
 }
 
