@@ -66,6 +66,65 @@ export class PicoWelcomeWidget extends ReactWidget {
                 <div className='pico-flex-grid'>
                     <div className='pico-col'>
                         {this.renderFeatureSection(
+                            'Prerequisites',
+                            'codicon codicon-checklist',
+                            <div>
+                                <p>
+                                    To quick-start your Raspberry Pi Pico SDK project, please expand the following section for
+                                    pointers to setup resources for your hardware and system.<br />
+                                </p>
+                                <details>
+                                    <summary>Setup resources</summary>
+                                    <ul className='pico-gs-section-listing'>
+                                        <li>
+                                            <div className='pico-gs-section'>
+                                                <b>Pico SDK:</b><br />
+                                                Check the <a href='https://github.com/raspberrypi/pico-sdk#quick-start-your-own-project' target='_blank' rel='noreferrer'>
+                                                    Raspberry Pi Pico SDK</a> repository for general
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div className='pico-gs-section'>
+                                                <b>Getting Started with the Raspberry Pi Pico:</b><br />
+                                                See <a href='https://rptl.io/pico-get-started' target='_blank' rel='noreferrer'>Getting Started with the Raspberry Pi Pico</a> for
+                                                information on how to setup your hardware, IDE/environment and for how to build and debug software for the Raspberry Pi Pico
+                                                and other RP2040-based devices.<br />
+                                                Please especially pay attention to the following sections:
+                                                <ul>
+                                                    <li>1. Quick Pico Setup</li>
+                                                    <li>2. The SDK</li>
+                                                    <li>5.1. Installing OpenOCD</li>
+                                                    <li>Appendix A: Using Picoprobe</li>
+                                                    <li>Appendix B: Using Picotool</li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div className='pico-gs-section'>
+                                                <b>Minicom:</b><br />
+                                                To allow minicom to run for the Pico Probe without sudo privileges, please check the&nbsp;
+                                                <a href='https://wiki.emacinc.com/wiki/Getting_Started_With_Minicom#Getting_Started_With_Minicom' target='_blank' rel='noreferrer'>
+                                                    Getting Started With Minicom Guide by emacinc.com</a>. Configure the minicom serial port setup for
+                                                <code>/dev/ttyACM0</code> as described.
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div className='pico-gs-section'>
+                                                <b>Double check Pico specific preferences:</b><br />
+                                                <code>Preferences &gt; Extensions &gt; Pico &gt; Gdbmultiarch: Path / Openocd: Path</code>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </details>
+                                <br />
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <hr className='pico-gs-hr' />
+                <div className='pico-flex-grid'>
+                    <div className='pico-col'>
+                        {this.renderFeatureSection(
                             'Create Project',
                             'codicon codicon-file-directory-create',
                             <p>
