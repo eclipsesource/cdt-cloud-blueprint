@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -14,14 +14,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { AbstractViewContribution, CommonMenus, FrontendApplication, FrontendApplicationContribution } from '@theia/core/lib/browser';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { CommandRegistry, MaybePromise, MenuModelRegistry } from '@theia/core/lib/common';
+import { Command, CommandRegistry, MaybePromise, MenuModelRegistry } from '@theia/core/lib/common';
 import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { inject, injectable } from 'inversify';
 
 import { PicoWelcomeWidget } from './widget';
 
-export const PicoWelcomeCommand = {
+export const PICO_WELCOME_COMMAND: Command = {
     id: PicoWelcomeWidget.ID,
     label: PicoWelcomeWidget.LABEL
 };
@@ -30,8 +29,7 @@ export const PicoWelcomeCommand = {
 export class PicoWelcomeFrontendContribution
     extends AbstractViewContribution<PicoWelcomeWidget>
     implements FrontendApplicationContribution {
-    @inject(FrontendApplicationStateService)
-    protected readonly stateService: FrontendApplicationStateService;
+
     @inject(FileNavigatorContribution)
     protected readonly fileNavigatorContribution: FileNavigatorContribution;
 
@@ -46,25 +44,20 @@ export class PicoWelcomeFrontendContribution
         });
     }
 
-    async onStart(_app: FrontendApplication): Promise<void> {
-        // open on startup
-        this.stateService.reachedState('ready').then(a => this.openView({ reveal: true }));
-    }
-
     initializeLayout(_app: FrontendApplication): MaybePromise<void> {
-        this.fileNavigatorContribution.openView({ reveal: true });
+        this.fileNavigatorContribution.openView({ activate: true });
     }
 
     override registerCommands(registry: CommandRegistry): void {
-        registry.registerCommand(PicoWelcomeCommand, {
+        registry.registerCommand(PICO_WELCOME_COMMAND, {
             execute: () => this.openView({ reveal: true })
         });
     }
 
     override registerMenus(registry: MenuModelRegistry): void {
         registry.registerMenuAction(CommonMenus.HELP, {
-            commandId: PicoWelcomeCommand.id,
-            label: PicoWelcomeCommand.label,
+            commandId: PICO_WELCOME_COMMAND.id,
+            label: PICO_WELCOME_COMMAND.label,
             order: 'a11'
         });
     }

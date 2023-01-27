@@ -39,6 +39,7 @@ import { inject, injectable } from 'inversify';
 
 import { ProjectService } from '../common/project-service';
 import { HardwareType, ProjectTemplate } from '../common/project-types';
+import { PICO_WELCOME_COMMAND } from './pico-getting-started/frontend-contribution';
 import { OPEN_OCD_PATH_SETTING_ID } from './preferences';
 import * as ProjectUtils from './project-service/project-utils';
 
@@ -216,6 +217,11 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         }
 
         this.doCreateProject(inputProjectName, selectedHardwareType.value, selectedProjectTemplate.value);
+
+        if (selectedHardwareType.value === HardwareType.PICO) {
+            // Open Pico Getting Started Widget
+            await this.commandService.executeCommand(PICO_WELCOME_COMMAND.id);
+        }
     }
 
     protected async doCreateProject(projectName: string, hardwareType: HardwareType, projectTemplate: ProjectTemplate): Promise<void> {
