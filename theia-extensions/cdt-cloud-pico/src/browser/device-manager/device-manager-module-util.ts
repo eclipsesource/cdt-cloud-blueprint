@@ -16,8 +16,7 @@
 import { bindViewContribution, WebSocketConnectionProvider, WidgetFactory } from '@theia/core/lib/browser';
 import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { interfaces } from '@theia/core/shared/inversify';
-import { DeviceListener, DeviceManagerService, deviceManagerServicePath } from '../../common/device-manager/device-manager-service';
-import { FrontendDeviceListener } from './device-listener';
+import { DeviceManagerService, deviceManagerServicePath } from '../../common/device-manager/device-manager-service';
 import { DeviceManagerFrontendContribution } from './device-manager-frontend-contribution';
 import { DeviceManagerViewWidget } from './device-manager-view-widget';
 
@@ -31,16 +30,10 @@ export const bindDeviceManager = ((bind: interfaces.Bind) => {
 
     bind(TabBarToolbarContribution).toService(DeviceManagerFrontendContribution);
 
-    bind(FrontendDeviceListener).toSelf().inSingletonScope();
-    bind(DeviceListener).toService(FrontendDeviceListener);
-
     bind(DeviceManagerService)
         .toDynamicValue(ctx => {
             const provider = ctx.container.get(WebSocketConnectionProvider);
-            const listener: DeviceListener =
-                ctx.container.get(DeviceListener);
-
-            return provider.createProxy(deviceManagerServicePath, listener);
+            return provider.createProxy(deviceManagerServicePath);
         })
         .inSingletonScope();
 });

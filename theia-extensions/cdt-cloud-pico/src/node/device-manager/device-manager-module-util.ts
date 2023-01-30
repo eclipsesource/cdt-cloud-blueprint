@@ -15,7 +15,7 @@
  ********************************************************************************/
 import { ConnectionHandler, JsonRpcConnectionHandler } from '@theia/core';
 import { interfaces } from '@theia/core/shared/inversify';
-import { DeviceListener, DeviceManagerService, deviceManagerServicePath } from '../../common/device-manager/device-manager-service';
+import { DeviceManagerService, deviceManagerServicePath } from '../../common/device-manager/device-manager-service';
 import { PicotoolDeviceManagerService } from './device-manager-backend-service';
 
 export const bindDeviceManager = (bind: interfaces.Bind) => {
@@ -25,16 +25,9 @@ export const bindDeviceManager = (bind: interfaces.Bind) => {
     bind(ConnectionHandler)
         .toDynamicValue(
             ctx =>
-                new JsonRpcConnectionHandler<DeviceListener>(
+                new JsonRpcConnectionHandler(
                     deviceManagerServicePath,
-                    client => {
-                        const deviceManagerService =
-                            ctx.container.get<DeviceManagerService>(
-                                DeviceManagerService
-                            );
-                        deviceManagerService.setClient(client);
-                        return deviceManagerService;
-                    }
+                    () => ctx.container.get<DeviceManagerService>(DeviceManagerService)
                 )
         )
         .inSingletonScope();

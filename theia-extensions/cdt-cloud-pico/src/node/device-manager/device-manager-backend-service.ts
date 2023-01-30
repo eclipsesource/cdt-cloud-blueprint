@@ -13,38 +13,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { injectable, postConstruct } from '@theia/core/shared/inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { exec, ExecException } from 'child_process';
 import { Device } from '../../common/device-manager/device';
-import { DeviceListener, DeviceManagerService } from '../../common/device-manager/device-manager-service';
+import { DeviceManagerService } from '../../common/device-manager/device-manager-service';
 
 @injectable()
 export class PicotoolDeviceManagerService implements DeviceManagerService {
 
     refreshInterval: NodeJS.Timer;
 
-    private client?: DeviceListener;
-
     private devices = <Device[]>[];
     private discoveryError?: Error;
-
-    @postConstruct()
-    init(): void {
-        this.refreshInterval = setInterval(this.refreshDevices.bind(this), 5000);
-    }
-
-    refreshDevices(): void {
-        this.discoverDevices().then(devices => {
-            // TODO: Compare against previous discovery to detect changes.
-            // TODO: Notification protocol for add/remove devices.
-            if (devices.length > 0) {
-                this.client?.notifyDeviceChange(devices[0]);
-            }
-        }).catch(error => {
-            // TODO
-            console.error(error);
-        });
-    }
 
     async discoverDevices(): Promise<Device[]> {
         return new Promise((resolve, reject) => {
@@ -53,15 +33,18 @@ export class PicotoolDeviceManagerService implements DeviceManagerService {
                 // Exit 249 happens on failure to find any devices in BOOTSEL mode
                 if (!!error && error.code !== 249) {
                     const message = 'Failed to execute picotool to discover connected devices.';
-                    this.devices = this.setDiscoveryError(`${message}\nReason: ${error.message}`);
+                    this.devices = [];
+                    this.setDiscoveryError(`${message}\nReason: ${error.message}`);
                 } else if (stdout) {
                     try {
-                        this.devices = this.setDevices(this.parseDevices(stdout));
-                    } catch (error: any) {
-                        this.setDiscoveryError(error.message);
+                        this.devices = this.parseDevices(stdout);
+                        this.discoveryError = undefined;
+                    } catch (parseError) {
+                        this.devices = [];
                     }
                 } else {
-                    this.devices = this.setDiscoveryError('No devices discovered by picotool.');
+                    this.devices = [];
+                    this.discoveryError = undefined;
                 }
 
                 if (this.discoveryError) {
@@ -79,14 +62,6 @@ export class PicotoolDeviceManagerService implements DeviceManagerService {
 
     dispose(): void {
         clearInterval(this.refreshInterval);
-    }
-
-    setClient(client: DeviceListener | undefined): void {
-        this.client = client;
-    }
-
-    getClient?(): DeviceListener | undefined {
-        return this.client;
     }
 
     // TODO: Handle multiple devices?
@@ -139,15 +114,9 @@ export class PicotoolDeviceManagerService implements DeviceManagerService {
         }];
     }
 
-    protected setDiscoveryError(message: string): Device[] {
+    protected setDiscoveryError(message: string): void {
         this.discoveryError = new Error(message);
         console.error(this.discoveryError);
-        return [];
-    }
-
-    protected setDevices(devices: Device[]): Device[] {
-        this.discoveryError = undefined;
-        return devices;
     }
 
     protected parseNoBootselDevices(text: string): Device[] {

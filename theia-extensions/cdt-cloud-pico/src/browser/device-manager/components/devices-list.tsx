@@ -39,13 +39,21 @@ export const LoadingDevicesList: React.FC<LoadingDevicesListProps> = ({
     state,
 }) => {
     if (state.type === 'loading') {
-        return <div className="loading">Loading...</div>;
+        return <div className="loading"><h1><span className='title'>Loading...</span></h1></div>;
     }
     if (state.type === 'error') {
         return (
             <div>
-                <div className="error-header">An error occured</div>
+                <div className="error-header"><h1><span className='title'>An error occured</span></h1></div>
                 {state.error && <div className="error-message">{state.error}</div>}
+            </div>
+        );
+    }
+    if (state.type === 'success' && state.devices.length === 0) {
+        return (
+            <div>
+                <h1><span className='title'>No accessible devices found</span></h1>
+                <div className='text'>Try connecting a pico probe or a device in boot mode.</div>
             </div>
         );
     }
@@ -60,11 +68,11 @@ export const DevicesList: React.FC<DevicesListProps> = ({ devices }) => (
     <div>
         <h1><span className='title'>Available Devices</span></h1>
         <ul className='devices-ul'>
-         {devices.map(device => (
-            <li className='devices-li' key={device.id}>
-                <Device device={device} />
-            </li>
-        ))}
+            {devices.map(device => (
+                <li className='devices-li' key={device.id}>
+                    <Device device={device} />
+                </li>
+            ))}
         </ul>
     </div>
 );
@@ -76,12 +84,14 @@ interface DeviceProps {
 const Device: React.FC<DeviceProps> = ({ device }) => (
     <div>
         <table className="device-header">
-            <tr>
-                <td className="device-label">{device.label}</td>
-                <td className="device-indicator">
-                <DeviceIndicator color={device.connected ? 'green' : 'red'} />
-                </td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td className="device-label">{device.label}</td>
+                    <td className="device-indicator">
+                        <DeviceIndicator color={device.connected ? 'green' : 'red'} />
+                    </td>
+                </tr>
+            </tbody>
         </table>
         <div className="device-data">
             <DeviceData device={device} />

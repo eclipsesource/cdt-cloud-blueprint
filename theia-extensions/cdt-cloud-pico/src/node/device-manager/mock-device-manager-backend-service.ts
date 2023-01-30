@@ -15,7 +15,7 @@
  ********************************************************************************/
 import { injectable, postConstruct } from '@theia/core/shared/inversify';
 import { Device } from '../../common/device-manager/device';
-import { DeviceListener, DeviceManagerService } from '../../common/device-manager/device-manager-service';
+import { DeviceManagerService } from '../../common/device-manager/device-manager-service';
 
 const deviceMocks = [
     {
@@ -64,10 +64,7 @@ export class MockDeviceManagerService implements DeviceManagerService {
     changeRandom(): void {
         const index = Math.floor(Math.random() * deviceMocks.length);
         deviceMocks[index].connected = !deviceMocks[index].connected;
-        this.client?.notifyDeviceChange(deviceMocks[index]);
     }
-
-    private client?: DeviceListener;
 
     async getAllDevices(): Promise<Device[]> {
         return deviceMocks;
@@ -75,13 +72,5 @@ export class MockDeviceManagerService implements DeviceManagerService {
 
     dispose(): void {
         clearInterval(this.randomChangeInterval);
-    }
-
-    setClient(client: DeviceListener | undefined): void {
-        this.client = client;
-    }
-
-    getClient?(): DeviceListener | undefined {
-        return this.client;
     }
 }
