@@ -4,13 +4,22 @@
     {
       "name": "Debug Pico Example",
       "type": "gdbtarget",
-      "request": "attach",
+      "request": "launch",
       "program": "${workspaceFolder}/${command:askProgramPath}",
       "gdb": "gdb-multiarch",
       "initCommands": [],
       "target": {
         "host": "127.0.0.1",
-        "port": "3333"
+        "port": "3333",
+        "server": "${config:pico.openocd.path}",
+        "serverParameters": [
+          "-s",
+          "/home/stefan/pico/openocd/tcl",
+          "-f",
+          "interface/picoprobe.cfg",
+          "-f",
+          "target/rp2040.cfg"
+        ]
       }
     }
   ]

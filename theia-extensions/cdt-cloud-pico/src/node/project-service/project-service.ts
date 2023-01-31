@@ -137,6 +137,10 @@ export class DefaultProjectService implements ProjectService {
             throw new Error('Could not resolve paths to tasks.json files!');
         }
 
+        if (!existsSync(workspaceTheiaTasksPath.dir.toString())) {
+            mkdirSync(workspaceTheiaTasksPath.dir.toString());
+        }
+
         // Init empty tasks.json file if workspace does not have tasks yet
         if (!existsSync(workspaceTheiaTasksPath.toString())) {
             this.writeJSONFile(workspaceTheiaTasksPath.toString(), { version: '2.0.0' });
@@ -182,8 +186,6 @@ export class DefaultProjectService implements ProjectService {
             configObject.program = `\${workspaceFolder}/${projectName}/build/${templateProjectName}.elf`;
             // update preLaunchTask
             configObject.preLaunchTask = `Binary build debug (${projectName})`;
-            // update init commands - add command to load executable on device
-            configObject.initCommands.push(`load \${workspaceFolder}/${projectName}/build/${templateProjectName}.elf`);
         });
         return projectLaunchConfiguration;
     }
@@ -204,7 +206,11 @@ export class DefaultProjectService implements ProjectService {
             throw new Error('Could not resolve paths to launch.json files!');
         }
 
-        // Init empty launch.json file if workspace does not have tasks yet
+        if (!existsSync(workspaceTheiaLaunchConfigsPath.dir.toString())) {
+            mkdirSync(workspaceTheiaLaunchConfigsPath.dir.toString());
+        }
+
+        // Init empty launch.json file if workspace does not have launch configurations yet
         if (!existsSync(workspaceTheiaLaunchConfigsPath.toString())) {
             this.writeJSONFile(workspaceTheiaLaunchConfigsPath.toString(), { version: '2.0.0', configurations: [] });
         }
