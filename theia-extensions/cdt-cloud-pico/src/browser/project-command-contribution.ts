@@ -265,7 +265,6 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         const configurationName = ProjectUtils.getLaunchConfigLabel(projectName);
         const configuration = this.debugManager.findConfiguration(configurationName, workspaceRoot);
         if (configuration) {
-            await this.commandRegistry.executeCommand(ProjectCommands.START_OPENOCD.id);
             await this.debugService.createDebugSession(configuration, workspaceRoot);
             await this.commandRegistry.executeCommand(DebugCommands.START.id, this.debugManager.current);
         } else {
