@@ -1,54 +1,53 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Run Cmake (blink)",
-            "type": "shell",
-            "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-            "options": {
-                "cwd": "${workspaceFolder}/blink"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": [],
-            "runOptions": {
-                "runOn": "folderOpen"
-            }
-        },
-        "label": "Binary build release (blink)",
-        "type": "shell",
-        "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build -j4",
-        "options": {
-            "cwd": "${workspaceFolder}/blink"
-        },
-        "group": {
-            "kind": "build",
-            "isDefault": true
-        },
-        "problemMatcher": [],
-        "runOptions": {
-            "runOn": "folderOpen"
-        }
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run CMake (blink)",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/blink"
+      },
+      "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
     },
     {
-        "label": "Binary build debug (blink)",
-        "type": "shell",
-        "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build -j4",
-        "options": {
-            "cwd": "${workspaceFolder}/blink"
-        },
-        "group": {
-            "kind": "build",
-            "isDefault": true
-        },
-        "problemMatcher": [],
-        "runOptions": {
-            "runOn": "folderOpen"
-        }
+      "label": "Binary build release (blink)",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/blink"
+      },
+      "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build -j4",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    },
+    {
+      "label": "Binary build debug (blink)",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/blink"
+      },
+      "command": "cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build -j4",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
     }
-]
+  ]
 }
