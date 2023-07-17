@@ -4,6 +4,28 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Prepare Electron Start",
+      "type": "shell",
+      "group": "build",
+      "command": "yarn electron rebuild",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Prepare Browser Start",
+      "type": "shell",
+      "group": "build",
+      "command": "yarn browser rebuild",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Build all",
       "type": "shell",
       "group": {
@@ -44,28 +66,6 @@
       "type": "shell",
       "group": "test",
       "command": "yarn electron start",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Prepare browser example",
-      "type": "shell",
-      "group": "test",
-      "command": "yarn browser rebuild",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Prepare electron example",
-      "type": "shell",
-      "group": "test",
-      "command": "yarn electron rebuild",
       "presentation": {
         "reveal": "always",
         "panel": "new"

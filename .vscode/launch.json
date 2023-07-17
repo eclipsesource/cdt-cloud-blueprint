@@ -6,19 +6,12 @@
   "configurations": [
     {
       "type": "node",
-      "request": "attach",
-      "name": "Attach by Process ID",
-      "processId": "${command:PickProcess}"
-    },
-    {
-      "type": "node",
       "request": "launch",
       "name": "Launch Electron Backend",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
-      "preLaunchTask": "Prepare electron example",
       "cwd": "${workspaceFolder}/applications/electron",
       "protocol": "inspector",
       "args": [
@@ -33,6 +26,7 @@
       ],
       "env": {
         "NODE_ENV": "development",
+        "TRACE_SERVER_PATH": "${workspaceFolder}/tracecompass-server/trace-compass-server/tracecompass-server",
         "PICO_SDK_PATH": "~/pico/pico-sdk"
       },
       "sourceMaps": true,
@@ -41,18 +35,21 @@
         "${workspaceFolder}/applications/electron/src-gen/frontend/electron-main.js",
         "${workspaceFolder}/applications/electron/src-gen/backend/main.js",
         "${workspaceFolder}/applications/electron/lib/**/*.js",
-        "${workspaceFolder}/theia-extensions/*/lib/**/*.js"
+        "${workspaceFolder}/theia-extensions/*/lib/**/*.js",
+        "${workspaceFolder}/node_modules/@theia/*/lib/**/*.js",
+        "${workspaceFolder}/node_modules/theia-traceviewer/lib/**/*.js",
+        "${workspaceFolder}/node_modules/traceviewer-base/lib/**/*.js"
       ],
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
-      "outputCapture": "std"
+      "outputCapture": "std",
+      "preLaunchTask": "Prepare Electron Start"
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Launch Browser Backend",
       "program": "${workspaceFolder}/applications/browser/src-gen/backend/main.js",
-      "preLaunchTask": "Prepare browser example",
       "args": [
         "--hostname=0.0.0.0",
         "--port=3000",
@@ -63,6 +60,7 @@
       ],
       "env": {
         "NODE_ENV": "development",
+        "TRACE_SERVER_PATH": "${workspaceFolder}/tracecompass-server/trace-compass-server/tracecompass-server",
         "PICO_SDK_PATH": "~/pico/pico-sdk"
       },
       "sourceMaps": true,
@@ -70,8 +68,79 @@
         "${workspaceRoot}/node_modules/@theia/*/lib/**/*.js",
         "${workspaceFolder}/applications/browser/src-gen/backend/*.js",
         "${workspaceFolder}/applications/browser/lib/**/*.js",
-        "${workspaceFolder}/theia-extensions/*/lib/**/*.js"
+        "${workspaceFolder}/theia-extensions/*/lib/**/*.js",
+        "${workspaceFolder}/node_modules/@theia/*/lib/**/*.js",
+        "${workspaceFolder}/node_modules/theia-traceviewer/lib/**/*.js",
+        "${workspaceFolder}/node_modules/traceviewer-base/lib/**/*.js"
       ],
+      "smartStep": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "preLaunchTask": "Prepare Browser Start"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Plugin Host",
+      "port": 9339,
+      "timeout": 60000,
+      "stopOnEntry": false,
+      "smartStep": true,
+      "sourceMaps": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "outFiles": [
+        "${workspaceFolder}/packages/plugin-ext/lib/**/*.js",
+        "${workspaceFolder}/plugins/**/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Browser Backend (eclipse.jdt.ls)",
+      "program": "${workspaceFolder}/applications/browser/src-gen/backend/main.js",
+      "args": [
+        "--log-level=debug",
+        "--root-dir=${workspaceFolder}/../eclipse.jdt.ls/org.eclipse.jdt.ls.core",
+        "--port=3000",
+        "--no-cluster",
+        "--no-app-auto-install"
+      ],
+      "env": {
+        "NODE_ENV": "development",
+        "TRACE_SERVER_PATH": "${workspaceFolder}/tracecompass-server/trace-compass-server/tracecompass-server"
+      },
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/applications/browser/src-gen/backend/*.js",
+        "${workspaceFolder}/applications/browser/lib/**/*.js",
+        "${workspaceFolder}/packages/*/lib/**/*.js",
+        "${workspaceFolder}/dev-packages/*/lib/**/*.js",
+        "${workspaceFolder}/node_modules/@theia/*/lib/**/*.js",
+        "${workspaceFolder}/node_modules/theia-traceviewer/lib/**/*.js",
+        "${workspaceFolder}/node_modules/traceviewer-base/lib/**/*.js"
+      ],
+      "smartStep": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "preLaunchTask": "Prepare Browser Start"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "protocol": "inspector",
+      "name": "Run Mocha Tests",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "--no-timeouts",
+        "--colors",
+        "--opts",
+        "${workspaceFolder}/configs/mocha.opts",
+        "**/${fileBasenameNoExtension}.js"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json"
+      },
+      "sourceMaps": true,
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std"
@@ -89,6 +158,29 @@
       "name": "Attach to Electron Frontend",
       "port": 9222,
       "webRoot": "${workspaceFolder}/applications/electron"
+    },
+    {
+      "name": "Launch VS Code Tests",
+      "type": "node",
+      "request": "launch",
+      "args": [
+        "${workspaceFolder}/applications/browser/src-gen/backend/main.js",
+        "${workspaceFolder}/plugins/vscode-api-tests/testWorkspace",
+        "--port",
+        "3030",
+        "--hostname",
+        "0.0.0.0",
+        "--extensionTestsPath=${workspaceFolder}/plugins/vscode-api-tests/out/singlefolder-tests",
+        "--hosted-plugin-inspect=9339"
+      ],
+      "env": {
+        "THEIA_DEFAULT_PLUGINS": "local-dir:${workspaceFolder}/plugins"
+      },
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/../.js"
+      ]
     }
   ]
 }
