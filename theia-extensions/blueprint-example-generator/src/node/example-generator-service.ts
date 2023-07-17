@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 STMicroelectronics and others.
+ * Copyright (C) 2022-2023 STMicroelectronics and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -62,9 +62,6 @@ export class ExampleGeneratorServiceImpl implements ExampleGeneratorService {
         }
         if (exampleId === Examples.PICO_BLINK) {
             return 'blink/README.md';
-        }
-        if (exampleId === Examples.PICO_DOOROPENER) {
-            return 'dooropener/README.md';
         }
         return undefined;
     }

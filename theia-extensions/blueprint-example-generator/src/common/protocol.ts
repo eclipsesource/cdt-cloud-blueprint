@@ -22,7 +22,6 @@ export enum Examples {
     EXAMPLE_TRACES = 'example-traces',
     CLANGD_CONTEXTS = 'clangd-contexts',
     PICO_BLINK = 'pico-blink',
-    PICO_DOOROPENER = 'pico-dooropener',
 }
 
 /**

@@ -267,7 +267,7 @@ export class PicoWelcomeWidget extends ReactWidget {
                     <br />
                     Alternatively, use the toolbar on top, right below the main menu bar.
                     <br />
-                    The following feature sections describe the needed steps to create, build and debug the dooropener example on your Pico device.
+                    The following feature sections describe the needed steps to create, build and debug the blink example on your Pico device.
                     They also offer an action to execute those steps automatically, they are indicated by this icon: <i className={'codicon codicon-arrow-circle-right'} />.
                 </p>
             </div>

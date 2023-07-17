@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2020 EclipseSource and others.
+ * Copyright (C) 2020-2022 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -16,7 +16,7 @@
 
 import { Examples, GenerateExampleCommand } from '@eclipse-cdt-cloud/blueprint-example-generator/lib/browser';
 import { CommandService, nls } from '@theia/core';
-import { codicon, Message, PreferenceService } from '@theia/core/lib/browser';
+import { Message, PreferenceService, codicon } from '@theia/core/lib/browser';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { GettingStartedWidget } from '@theia/getting-started/lib/browser/getting-started-widget';
@@ -203,15 +203,6 @@ export class TheiaBlueprintGettingStartedWidget extends GettingStartedWidget {
                     onClick={() => this.doGenerateExample(Examples.PICO_BLINK)}
                     onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, Examples.PICO_BLINK)}>
                     {nls.localizeByDefault('Pico Blink')}
-                </a>
-            </div>
-            <div className='gs-action-container'>
-                <a
-                    role={'button'}
-                    tabIndex={0}
-                    onClick={() => this.doGenerateExample(Examples.PICO_DOOROPENER)}
-                    onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, Examples.PICO_DOOROPENER)}>
-                    {nls.localizeByDefault('Pico DoorOpener')}
                 </a>
             </div>
         </div>;
