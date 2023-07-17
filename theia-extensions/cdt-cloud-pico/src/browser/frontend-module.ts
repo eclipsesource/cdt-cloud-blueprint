@@ -19,24 +19,24 @@ import { CommandContribution, MenuContribution } from '@theia/core';
 import { LabelProviderContribution } from '@theia/core/lib/browser/label-provider';
 import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
 
-import { bindCDTCloudNavigator } from './cdt-navigator/navigator-module-util';
+import { bindCDTCloudPicoNavigator } from './cdt-navigator/navigator-module-util';
 import { bindDeviceManager } from './device-manager/device-manager-module-util';
 import { ProjectTreeLabelProviderContribution } from './label-provider';
 import { bindPicoWelcomeWidget } from './pico-getting-started/frontend-module-util';
 import { bindPicoPreferences } from './preferences';
 import { ProjectContribution } from './project-command-contribution';
-import { bindProjectEditor } from './project-editor/project-editor-module-util';
-import { bindProjectService } from './project-service/project-service-module-util';
+import { bindPicoProjectEditor } from './project-editor/project-editor-module-util';
+import { bindPicoProjectService } from './project-service/project-service-module-util';
 import { bindToolbarContribution } from './toolbar-contribution';
 
 export default new ContainerModule((bind: interfaces.Bind, _unbind: interfaces.Unbind, _isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     bindDeviceManager(bind);
-    bindProjectService(bind);
-    bindCDTCloudNavigator(bind);
+    bindPicoProjectService(bind);
+    bindCDTCloudPicoNavigator(bind);
     bindToolbarContribution(rebind);
     bindPicoPreferences(bind);
     bindPicoWelcomeWidget(bind);
-    bindProjectEditor(bind);
+    bindPicoProjectEditor(bind);
 
     bind(LabelProviderContribution).to(ProjectTreeLabelProviderContribution).inSingletonScope();
     bind(CommandContribution).to(ProjectContribution).inSingletonScope();

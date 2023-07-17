@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -56,9 +56,9 @@ export class ProjectTreeDecorator implements TreeDecorator {
         }
         for (const node of new DepthFirstTreeIterator(tree.root)) {
             if (ProjectUtils.isProjectNode(node)) {
-                const projectType = 'pico'; // TODO determine hardware type from .cdtcloudfile via projectservice
+                const projectType = 'pico'; // TODO determine hardware type from .pico-project file via projectservice
                 const projectDecoration: TreeDecoration.Data = {
-                    tooltip: `CDT Cloud ${projectType} project`,
+                    tooltip: `CDT Cloud Pico ${projectType} project`,
                     captionSuffixes: [{
                         data: `${projectType} project`
                     }]

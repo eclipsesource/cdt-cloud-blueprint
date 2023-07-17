@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource
+ * Copyright (C) 2022-2023 EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -19,7 +19,7 @@ import URI from '@theia/core/lib/common/uri';
 import { injectable, interfaces } from '@theia/core/shared/inversify';
 import { ProjectEditorWidget, ProjectEditorWidgetOptions } from './project-editor-widget';
 
-export const bindProjectEditor = ((bind: interfaces.Bind) => {
+export const bindPicoProjectEditor = ((bind: interfaces.Bind) => {
     bind(OpenHandler).to(ProjectEditorOpenHandler).inSingletonScope();
     bind<WidgetFactory>(WidgetFactory).toDynamicValue(context => ({
         id: ProjectEditorOpenHandler.ID,
@@ -36,13 +36,13 @@ export const bindProjectEditor = ((bind: interfaces.Bind) => {
 
 @injectable()
 export class ProjectEditorOpenHandler extends NavigatableWidgetOpenHandler<ProjectEditorWidget> {
-    static ID = 'project-editor-opener';
+    static ID = 'pico-project-editor-opener';
 
     readonly id = ProjectEditorOpenHandler.ID;
-    readonly label = nls.localize('cdt-cloud-pico/project-editor', 'Project Editor');
+    readonly label = nls.localize('cdt-cloud-pico/project-editor', 'Pico Project Editor');
 
     canHandle(uri: URI, options?: WidgetOpenerOptions): MaybePromise<number> {
-        return uri.path.ext === '.cdtcloud' ? 500 : -1;
+        return uri.path.ext === '.pico-project' ? 500 : -1;
     }
 }
 

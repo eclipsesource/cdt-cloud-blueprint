@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -16,14 +16,14 @@
 import { JsonRpcServer } from '@theia/core';
 import { HardwareType, ProjectTemplate } from './project-types';
 
-export const projectServicePath = '/services/cdtCloudProjectService';
+export const picoProjectServicePath = '/services/picoProjectService';
 
-export const ProjectService = Symbol('ProjectService');
-export interface ProjectService extends JsonRpcServer<ProjectClient> {
+export const PicoProjectService = Symbol('PicoProjectService');
+export interface PicoProjectService extends JsonRpcServer<PicoProjectClient> {
     createProject(workspacePath: string, projectName: string, hardwareType: HardwareType, projectTemplate: ProjectTemplate): Promise<string>;
     deleteProject(projectPath: string, projectName: string): Promise<void>;
 }
 
-export const ProjectClient = Symbol('ProjectClient');
-export interface ProjectClient {
+export const PicoProjectClient = Symbol('PicoProjectClient');
+export interface PicoProjectClient {
 }

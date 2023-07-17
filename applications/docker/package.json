@@ -32,7 +32,7 @@
           "security.workspace.trust.startupPrompt": "never",
           "security.workspace.trust.enabled": false,
           "files.associations": {
-            "*.cdtcloud": "json"
+            "*.pico-project": "json"
           },
           "cmake.configureOnOpen": true
         }

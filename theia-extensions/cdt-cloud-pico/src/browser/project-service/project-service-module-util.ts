@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource
+ * Copyright (C) 2022-2023 EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -16,18 +16,18 @@
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser';
 import { interfaces } from '@theia/core/shared/inversify';
 
-import { ProjectClient, ProjectService, projectServicePath } from '../../common/project-service';
-import { ProjectFrontendClient } from './project-client';
+import { PicoProjectClient, PicoProjectService, picoProjectServicePath } from '../../common/project-service';
+import { PicoProjectFrontendClient } from './project-client';
 
-export const bindProjectService = ((bind: interfaces.Bind) => {
-    bind(ProjectFrontendClient).toSelf().inSingletonScope();
-    bind(ProjectClient).toService(ProjectFrontendClient);
+export const bindPicoProjectService = ((bind: interfaces.Bind) => {
+    bind(PicoProjectFrontendClient).toSelf().inSingletonScope();
+    bind(PicoProjectClient).toService(PicoProjectFrontendClient);
 
-    bind(ProjectService)
+    bind(PicoProjectService)
         .toDynamicValue(ctx => {
             const provider = ctx.container.get(WebSocketConnectionProvider);
-            const client: ProjectClient = ctx.container.get(ProjectClient);
-            return provider.createProxy(projectServicePath, client);
+            const client: PicoProjectClient = ctx.container.get(PicoProjectClient);
+            return provider.createProxy(picoProjectServicePath, client);
         })
         .inSingletonScope();
 });

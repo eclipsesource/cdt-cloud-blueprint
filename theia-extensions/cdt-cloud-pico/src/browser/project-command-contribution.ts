@@ -38,7 +38,7 @@ import { TerminalService } from '@theia/terminal/lib/browser/base/terminal-servi
 import { WorkspaceService } from '@theia/workspace/lib/browser';
 import { inject, injectable } from 'inversify';
 
-import { ProjectService } from '../common/project-service';
+import { PicoProjectService } from '../common/project-service';
 import { HardwareType, ProjectTemplate } from '../common/project-types';
 import { PICO_WELCOME_COMMAND } from './pico-getting-started/frontend-contribution';
 import { OPEN_OCD_PATH_SETTING_ID } from './preferences';
@@ -47,19 +47,19 @@ import * as ProjectUtils from './project-service/project-utils';
 export namespace ProjectCommands {
     export const BUILD_PROJECT: Command = {
         id: 'cdtcloud.pico.project.build',
-        label: 'Build Project'
+        label: 'Build Pico Project'
     };
     export const CREATE_PROJECT: Command = {
         id: 'cdtcloud.pico.project.create',
-        label: 'New CDT Cloud Project...'
+        label: 'New CDT Cloud Pico Project...'
     };
     export const DEBUG_PROJECT: Command = {
         id: 'cdtcloud.pico.project.debug',
-        label: 'Debug Project'
+        label: 'Debug Pico Project'
     };
     export const EDIT_PROJECT: Command = {
         id: 'cdtcloud.pico.project.edit',
-        label: 'Edit Project File'
+        label: 'Edit Pico Project File'
     };
     export const FLASH_PROJECT: Command = {
         id: 'cdtcloud.pico.project.flash',
@@ -93,8 +93,8 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     protected readonly openerService: OpenerService;
     @inject(PreferenceService)
     protected readonly preferenceService: PreferenceService;
-    @inject(ProjectService)
-    protected readonly projectService: ProjectService;
+    @inject(PicoProjectService)
+    protected readonly projectService: PicoProjectService;
     @inject(QuickInputService)
     protected readonly quickInputService: QuickInputService;
     @inject(SelectionService)
@@ -190,7 +190,7 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     protected async createProjectViaQuickInput(): Promise<void> {
         // QuickInput project name (name of project directory)
         const inputProjectName = await this.quickInputService.input({
-            prompt: 'Enter CDT Cloud Project Name',
+            prompt: 'Enter CDT Cloud Pico Project Name',
             placeHolder: 'projectName',
             ignoreFocusLost: true,
             validateInput: async (input: string) => {
@@ -203,8 +203,8 @@ export class ProjectContribution implements CommandContribution, MenuContributio
             }
         });
         if (!inputProjectName) {
-            this.messageService.error('Cannot create CDT Cloud Project: projectName is missing!');
-            throw Error('Cannot create CDT Cloud Project: projectName is missing!');
+            this.messageService.error('Cannot create CDT Cloud Pico Project: projectName is missing!');
+            throw Error('Cannot create CDT Cloud Pico Project: projectName is missing!');
         }
 
         // QuickPick hardware type
@@ -217,8 +217,8 @@ export class ProjectContribution implements CommandContribution, MenuContributio
                 activeItem: hardwareTypes[0] // preselect first available item
             });
         if (!selectedHardwareType) {
-            this.messageService.error('Cannot create CDT Cloud Project: hardwareType is missing!');
-            throw Error('Cannot create CDT Cloud Project: hardwareType is missing!');
+            this.messageService.error('Cannot create CDT Cloud Pico Project: hardwareType is missing!');
+            throw Error('Cannot create CDT Cloud Pico Project: hardwareType is missing!');
         }
 
         // QuickPick project template
@@ -231,8 +231,8 @@ export class ProjectContribution implements CommandContribution, MenuContributio
                 activeItem: projectTemplates[0] // preselect first available item
             });
         if (!selectedProjectTemplate) {
-            this.messageService.error('Cannot create CDT Cloud Project: projectTemplate is missing!');
-            throw Error('Cannot create CDT Cloud Project: projectTemplate is missing!');
+            this.messageService.error('Cannot create CDT Cloud Pico Project: projectTemplate is missing!');
+            throw Error('Cannot create CDT Cloud Pico Project: projectTemplate is missing!');
         }
 
         this.doCreateProject(inputProjectName, selectedHardwareType.value, selectedProjectTemplate.value);
@@ -244,7 +244,7 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     }
 
     protected async doCreateProject(projectName: string, hardwareType: HardwareType, projectTemplate: ProjectTemplate): Promise<void> {
-        // Create CDT CLoud project via project service
+        // Create CDT Cloud Pico project via project service
         const workspacePath = (await this.getWorkspaceRoot()).path.toString();
         const projectPath = await this.projectService.createProject(workspacePath, projectName, hardwareType, projectTemplate);
 
@@ -273,7 +273,7 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     }
 
     protected async editProject(projectPath: string): Promise<void> {
-        const uri = new URI(projectPath).resolve('.cdtcloud');
+        const uri = new URI(projectPath).resolve('.pico-project');
         const opener = await this.openerService.getOpener(uri);
         opener.open(uri);
     }
@@ -371,7 +371,7 @@ export class ProjectContribution implements CommandContribution, MenuContributio
             const workspaceRoot = (await this.workspaceService.roots)[0];
             return workspaceRoot.resource;
         }
-        throw Error('Cannot create CDT Cloud Project: project creation is not allowed, no workspace opened!');
+        throw Error('Cannot create CDT Cloud Pico Project: project creation is not allowed, no workspace opened!');
     }
 
     protected findProgramExecutablePath(projectPath: string, projectName: string): string {

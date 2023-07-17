@@ -334,7 +334,7 @@ export class PicoWelcomeWidget extends ReactWidget {
     };
 
     protected editBlinkProject = (): void => {
-        open(this.openerService, this.getBlinkFileUri('.cdtcloud'));
+        open(this.openerService, this.getBlinkFileUri('.pico-project'));
     };
 
     protected editBlinkCFile = (): void => {

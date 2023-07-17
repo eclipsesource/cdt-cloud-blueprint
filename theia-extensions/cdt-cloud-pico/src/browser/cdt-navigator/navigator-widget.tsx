@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { CommandService } from '@theia/core';
-import { NodeProps, TreeNode, TREE_NODE_CONTENT_CLASS } from '@theia/core/lib/browser';
+import { NodeProps, TREE_NODE_CONTENT_CLASS, TreeNode } from '@theia/core/lib/browser';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import * as React from '@theia/core/shared/react';
 import { DirNode } from '@theia/filesystem/lib/browser';
@@ -24,7 +24,7 @@ import { ProjectCommands } from '../project-command-contribution';
 import * as ProjectUtils from '../project-service/project-utils';
 
 @injectable()
-export class CDTCloudFileNavigatorWidget extends FileNavigatorWidget {
+export class PicoFileNavigatorWidget extends FileNavigatorWidget {
 
     @inject(CommandService)
     protected readonly commandService: CommandService;

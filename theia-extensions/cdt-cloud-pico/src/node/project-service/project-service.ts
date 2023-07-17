@@ -19,7 +19,7 @@ import { DebugConfiguration } from '@theia/debug/lib/common/debug-configuration'
 import { TaskConfiguration, TaskInfo, TaskServer } from '@theia/task/lib/common';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { copySync, mkdirSync, rmSync } from 'fs-extra';
-import { ProjectClient, ProjectService } from '../../common/project-service';
+import { PicoProjectClient, PicoProjectService } from '../../common/project-service';
 import { HardwareType, ProjectTemplate } from '../../common/project-types';
 
 const RESOURCE_DIRECTORY = '../../../../blueprint-example-generator/resources';
@@ -31,15 +31,15 @@ const WORKSPACE_THEIA_TASKS = `${WORKSPACE_THEIA_DIRECTORY}/tasks.json`;
 const WORKSPACE_THEIA_LAUNCH_CONFIGS = `${WORKSPACE_THEIA_DIRECTORY}/launch.json`;
 
 @injectable()
-export class DefaultProjectService implements ProjectService {
+export class DefaultPicoProjectService implements PicoProjectService {
 
-    private client?: ProjectClient;
+    private client?: PicoProjectClient;
 
     @inject(TaskServer)
     private taskServer: TaskServer;
 
     async createProject(workspacePath: string, projectName: string, hardwareType: HardwareType, projectTemplate: ProjectTemplate): Promise<string> {
-        this.logInfo(`Create CDTCloud project '${projectName}' from template '${projectTemplate}' in '${workspacePath}' for hardwareType '${hardwareType}'`);
+        this.logInfo(`Create CDT Cloud Pico project '${projectName}' from template '${projectTemplate}' in '${workspacePath}' for hardwareType '${hardwareType}'`);
         // If project already exists, remove for a clean start
         const projectPath = new Path(workspacePath).resolve(projectName)?.toString();
         if (!projectPath) {
@@ -52,8 +52,8 @@ export class DefaultProjectService implements ProjectService {
         mkdirSync(projectPath);
         // Copy template project
         this.copyTemplateProject(projectPath, hardwareType, projectTemplate);
-        // Create .cdtcloud project file
-        this.createCDTCloudProjectFile(projectPath, hardwareType);
+        // Create .pico-project project file
+        this.createPicoProjectFile(projectPath, hardwareType);
         // Create project specific tasks in workspace
         const taskConfiguration = this.getProjectTaskConfiguration(projectName);
         // Add theia workspace tasks
@@ -68,7 +68,7 @@ export class DefaultProjectService implements ProjectService {
     }
 
     async deleteProject(projectPath: string, projectName: string): Promise<void> {
-        this.logInfo(`Delete CDTCloud project '${projectName}' from '${projectPath}'`);
+        this.logInfo(`Delete CDT Cloud Pico project '${projectName}' from '${projectPath}'`);
         // Delete project directory
         rmSync(projectPath, { recursive: true, force: true });
         // Remove tasks configurations
@@ -104,12 +104,12 @@ export class DefaultProjectService implements ProjectService {
         writeFileSync(jsonFilePath, jsonObjectString, 'utf8');
     }
 
-    protected createCDTCloudProjectFile(projectPath: string, hardwareType: HardwareType): void {
-        // Create .cdtcloud project file (JSON)
+    protected createPicoProjectFile(projectPath: string, hardwareType: HardwareType): void {
+        // Create .pico-project project file (JSON)
         const projectJsonObject = { hardwareType: hardwareType };
-        const projectFilePath = new Path(projectPath).resolve('.cdtcloud');
+        const projectFilePath = new Path(projectPath).resolve('.pico-project');
         if (!projectFilePath) {
-            throw new Error('Could not resolve .cdtcloud path!');
+            throw new Error('Could not resolve .pico-project path!');
         }
         this.writeJSONFile(projectFilePath.toString(), projectJsonObject);
     }
@@ -253,13 +253,13 @@ export class DefaultProjectService implements ProjectService {
 
     protected logError(data: string | Buffer): void {
         if (data) {
-            console.error(`DefaultProjectService: ${data.toString()}`);
+            console.error(`DefaultPicoProjectService: ${data.toString()}`);
         }
     }
 
     protected logInfo(data: string | Buffer): void {
         if (data) {
-            console.info(`DefaultProjectService: ${data.toString()}`);
+            console.info(`DefaultPicoProjectService: ${data.toString()}`);
         }
     }
 
@@ -267,11 +267,11 @@ export class DefaultProjectService implements ProjectService {
         // Nothing to dispose
     }
 
-    setClient(client: ProjectClient | undefined): void {
+    setClient(client: PicoProjectClient | undefined): void {
         this.client = client;
     }
 
-    getClient?(): ProjectClient | undefined {
+    getClient?(): PicoProjectClient | undefined {
         return this.client;
     }
 

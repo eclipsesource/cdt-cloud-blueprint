@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -18,15 +18,15 @@ import { interfaces } from '@theia/core/shared/inversify';
 import { FILE_NAVIGATOR_ID, NavigatorTreeDecorator } from '@theia/navigator/lib/browser';
 import { createFileNavigatorWidget } from './navigator-container';
 import { ProjectTreeDecorator } from './navigator-tree-decorator';
-import { CDTCloudFileNavigatorWidget } from './navigator-widget';
+import { PicoFileNavigatorWidget } from './navigator-widget';
 
-export const bindCDTCloudNavigator = ((bind: interfaces.Bind) => {
-    bind(CDTCloudFileNavigatorWidget).toDynamicValue(ctx =>
+export const bindCDTCloudPicoNavigator = ((bind: interfaces.Bind) => {
+    bind(PicoFileNavigatorWidget).toDynamicValue(ctx =>
         createFileNavigatorWidget(ctx.container)
     );
     bind(WidgetFactory).toDynamicValue(({ container }) => ({
         id: FILE_NAVIGATOR_ID,
-        createWidget: () => container.get(CDTCloudFileNavigatorWidget)
+        createWidget: () => container.get(PicoFileNavigatorWidget)
     })).inSingletonScope();
 
     bind(ProjectTreeDecorator).toSelf().inSingletonScope();

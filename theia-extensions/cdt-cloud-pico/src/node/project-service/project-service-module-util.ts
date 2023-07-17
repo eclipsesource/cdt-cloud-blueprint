@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -15,16 +15,16 @@
  ********************************************************************************/
 import { ConnectionHandler, JsonRpcConnectionHandler } from '@theia/core';
 import { interfaces } from '@theia/core/shared/inversify';
-import { ProjectClient, ProjectService, projectServicePath } from '../../common/project-service';
-import { DefaultProjectService } from './project-service';
+import { PicoProjectClient, PicoProjectService, picoProjectServicePath } from '../../common/project-service';
+import { DefaultPicoProjectService } from './project-service';
 
-export const bindProjectService = (bind: interfaces.Bind) => {
-    bind(ProjectService).to(DefaultProjectService).inSingletonScope();
+export const bindPicoProjectService = (bind: interfaces.Bind) => {
+    bind(PicoProjectService).to(DefaultPicoProjectService).inSingletonScope();
     bind(ConnectionHandler)
         .toDynamicValue(
             ctx =>
-                new JsonRpcConnectionHandler<ProjectClient>(projectServicePath, client => {
-                    const projectAPIService = ctx.container.get<ProjectService>(ProjectService);
+                new JsonRpcConnectionHandler<PicoProjectClient>(picoProjectServicePath, client => {
+                    const projectAPIService = ctx.container.get<PicoProjectService>(PicoProjectService);
                     projectAPIService.setClient(client);
                     return projectAPIService;
                 })

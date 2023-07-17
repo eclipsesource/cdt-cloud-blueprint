@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -19,11 +19,11 @@ import URI from '@theia/core/lib/common/uri';
 import { DirNode, FileStatNode } from '@theia/filesystem/lib/browser';
 
 export function isProjectFile(fileUri: URI): boolean {
-    return fileUri.path.ext === '.cdtcloud';
+    return fileUri.path.ext === '.pico-project';
 }
 
 export function isProjectFileNode(node: TreeNode): boolean {
-    // A CDTCloud project file is identified via a .cdtcloud file extension
+    // A Pico project file is identified via a '.pico-project' file extension
     if (FileStatNode.is(node)) {
         return isProjectFile(node.uri);
     }
@@ -31,7 +31,7 @@ export function isProjectFileNode(node: TreeNode): boolean {
 }
 
 export function isProjectNode(node: TreeNode): boolean {
-    // A CDTCloud projects is identified via a .cdtcloud file that is one of its direct children
+    // A Pico project is identified via a '.pico-project' file that is one of its direct children
     if (DirNode.is(node) && CompositeTreeNode.is(node)) {
         for (const child of node.children) {
             if (FileStatNode.is(child) && isProjectFileNode(child)) {

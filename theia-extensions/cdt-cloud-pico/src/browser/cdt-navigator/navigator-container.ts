@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 EclipseSource and others.
+ * Copyright (C) 2022-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -20,13 +20,13 @@ import { FILE_NAVIGATOR_PROPS } from '@theia/navigator/lib/browser/navigator-con
 import { NavigatorDecoratorService } from '@theia/navigator/lib/browser/navigator-decorator-service';
 import { FileNavigatorTree } from '@theia/navigator/lib/browser/navigator-tree';
 
-import { CDTCloudFileNavigatorWidget } from './navigator-widget';
+import { PicoFileNavigatorWidget } from './navigator-widget';
 
 export function createFileNavigatorContainer(parent: interfaces.Container): Container {
     const child = createFileTreeContainer(parent, {
         tree: FileNavigatorTree,
         model: FileNavigatorModel,
-        widget: CDTCloudFileNavigatorWidget,
+        widget: PicoFileNavigatorWidget,
         decoratorService: NavigatorDecoratorService,
         props: FILE_NAVIGATOR_PROPS,
     });
@@ -34,6 +34,6 @@ export function createFileNavigatorContainer(parent: interfaces.Container): Cont
     return child;
 }
 
-export function createFileNavigatorWidget(parent: interfaces.Container): CDTCloudFileNavigatorWidget {
-    return createFileNavigatorContainer(parent).get(CDTCloudFileNavigatorWidget);
+export function createFileNavigatorWidget(parent: interfaces.Container): PicoFileNavigatorWidget {
+    return createFileNavigatorContainer(parent).get(PicoFileNavigatorWidget);
 }
