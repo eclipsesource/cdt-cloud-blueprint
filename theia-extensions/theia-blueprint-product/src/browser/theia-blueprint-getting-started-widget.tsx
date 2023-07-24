@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2020-2022 EclipseSource and others.
+ * Copyright (C) 2020-2023 EclipseSource and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
-import { Examples, GenerateExampleCommand } from '@eclipse-cdt-cloud/blueprint-example-generator/lib/browser';
+import { CdtCloudBlueprintExamples, GenerateExampleCommand } from '@eclipse-cdt-cloud/blueprint-examples/lib/browser';
 import { CommandService, nls } from '@theia/core';
 import { Message, PreferenceService, codicon } from '@theia/core/lib/browser';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
@@ -173,8 +173,8 @@ export class TheiaBlueprintGettingStartedWidget extends GettingStartedWidget {
                 <a
                     role={'button'}
                     tabIndex={0}
-                    onClick={() => this.doGenerateExample(Examples.CMAKE_EXAMPLE)}
-                    onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, Examples.CMAKE_EXAMPLE)}>
+                    onClick={() => this.doGenerateExample(CdtCloudBlueprintExamples.CMAKE_EXAMPLE)}
+                    onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, CdtCloudBlueprintExamples.CMAKE_EXAMPLE)}>
                     {nls.localizeByDefault('CMake Example')}
                 </a>
             </div>
@@ -182,8 +182,8 @@ export class TheiaBlueprintGettingStartedWidget extends GettingStartedWidget {
                 <a
                     role={'button'}
                     tabIndex={0}
-                    onClick={() => this.doGenerateExample(Examples.EXAMPLE_TRACES)}
-                    onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, Examples.EXAMPLE_TRACES)}>
+                    onClick={() => this.doGenerateExample(CdtCloudBlueprintExamples.EXAMPLE_TRACES)}
+                    onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, CdtCloudBlueprintExamples.EXAMPLE_TRACES)}>
                     {nls.localizeByDefault('Example traces')}
                 </a>
             </div>
@@ -191,12 +191,12 @@ export class TheiaBlueprintGettingStartedWidget extends GettingStartedWidget {
                 <a
                     role={'button'}
                     tabIndex={0}
-                    onClick={() => this.doGenerateExample(Examples.CLANGD_CONTEXTS)}
-                    onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, Examples.CLANGD_CONTEXTS)}>
+                    onClick={() => this.doGenerateExample(CdtCloudBlueprintExamples.CLANGD_CONTEXTS)}
+                    onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, CdtCloudBlueprintExamples.CLANGD_CONTEXTS)}>
                     {nls.localizeByDefault('Clangd contexts')}
                 </a>
             </div>
-            <div className='gs-action-container'>
+            {/* <div className='gs-action-container'>
                 <a
                     role={'button'}
                     tabIndex={0}
@@ -204,7 +204,7 @@ export class TheiaBlueprintGettingStartedWidget extends GettingStartedWidget {
                     onKeyDown={(e: React.KeyboardEvent) => this.doGenerateExampleEnter(e, Examples.PICO_BLINK)}>
                     {nls.localizeByDefault('Pico Blink')}
                 </a>
-            </div>
+            </div> */}
         </div>;
     }
 
@@ -265,7 +265,7 @@ export interface PreferencesProps {
     preferenceService: PreferenceService;
 }
 
-function GSPreferences(props: PreferencesProps): JSX.Element {
+function GSPreferences(props: PreferencesProps): React.JSX.Element {
     const [alwaysShowWelcomePage, setAlwaysShowWelcomePage] = React.useState<boolean>(props.preferenceService.get(BlueprintPreferences.alwaysShowWelcomePage, true));
     React.useEffect(() => {
         const preflistener = props.preferenceService.onPreferenceChanged(change => {
