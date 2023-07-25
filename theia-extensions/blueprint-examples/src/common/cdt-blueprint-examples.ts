@@ -15,7 +15,6 @@
  ********************************************************************************/
 
 export enum CdtCloudBlueprintExamples {
-    CMAKE_EXAMPLE = 'cmake-example',
-    EXAMPLE_TRACES = 'example-traces',
-    CLANGD_CONTEXTS = 'clangd-contexts'
+    PICO_EMPTY = 'empty',
+    PICO_BLINK = 'blink',
 }

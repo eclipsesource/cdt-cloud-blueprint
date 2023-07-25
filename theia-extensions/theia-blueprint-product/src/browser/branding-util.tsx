@@ -14,11 +14,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
+import { GenerateExampleCommand } from '@eclipse-cdt-cloud/blueprint-examples/lib/browser';
 import { Key, KeyCode } from '@theia/core/lib/browser';
-import { nls } from '@theia/core';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CommandService } from '@theia/core/lib/common/command';
-import { GenerateExampleCommand, CdtCloudBlueprintExamples } from '@eclipse-cdt-cloud/blueprint-examples/lib/browser';
 import * as React from 'react';
 
 export interface ExternalBrowserLinkProps {
@@ -67,13 +66,6 @@ export function renderWhatIs(windowService: WindowService, commandService: Comma
                 {'example project'}
             </a>.</div>
         <div>Explore the features, such as code editing, building, build configurations, debugging, etc.</div>
-        <div>
-            <a
-                role={'button'}
-                tabIndex={0}
-                onClick={() => generateExample(commandService, CdtCloudBlueprintExamples.EXAMPLE_TRACES)}>
-                {nls.localizeByDefault('Generate example traces')}
-            </a> {' '} and open them with Trace Compass Cloud.</div>
     </div>;
 }
 

@@ -17,68 +17,112 @@
 import { Example, ExampleOptions, ExamplesContribution } from '@eclipse-cdt-cloud/blueprint-example-generator/lib/node';
 import { URI } from '@theia/core';
 import { injectable } from '@theia/core/shared/inversify';
-import { PanelKind, RevealKind } from '@theia/task/lib/common';
+import { DebugConfiguration } from '@theia/debug/lib/common/debug-configuration';
+import { TaskCustomization } from '@theia/task/lib/common';
 import { CdtCloudBlueprintExamples } from '../common/cdt-blueprint-examples';
 
 @injectable()
 export class CdtCloudBlueprintExamplesContribution implements ExamplesContribution {
     get examples(): Example[] {
+        return [
+            {
+                id: CdtCloudBlueprintExamples.PICO_EMPTY,
+                label: 'PICO empty project template',
+                welcomeFile: 'README.md',
+                resourcesPath: new URI(module.path).resolve('../../resources/empty').normalizePath().toString(),
+                launches: (options: ExampleOptions) => this.getPicoLaunchConfigs(options),
+                tasks: (options: ExampleOptions) => this.getPicoTasks(options)
+            },
+            {
+                id: CdtCloudBlueprintExamples.PICO_BLINK,
+                label: 'PICO blink project template',
+                welcomeFile: 'README.md',
+                resourcesPath: new URI(module.path).resolve('../../resources/blink').normalizePath().toString(),
+                launches: (options: ExampleOptions) => this.getPicoLaunchConfigs(options),
+                tasks: (options: ExampleOptions) => this.getPicoTasks(options)
+            }];
+    }
+
+    private getPicoLaunchConfigs(options: ExampleOptions): DebugConfiguration[] {
         return [{
-            id: CdtCloudBlueprintExamples.CMAKE_EXAMPLE,
-            label: 'CMake example',
-            welcomeFile: 'CMAKE_EXAMPLE_README.md',
-            resourcesPath: new URI(module.path).resolve('../../resources/cmake-example').normalizePath().toString(),
-            launches: (options: ExampleOptions) => [{
-                'type': 'gdb',
-                'request': 'launch',
-                'name': `Debug Example C++ (${options.targetFolderName})`,
-                'program': `\${workspaceFolder}/${options.targetFolderName}/Example`,
-                'initCommands': ['tbreak main'],
-                'preLaunchTask': `Binary build (${options.targetFolderName})`
-            }],
-            tasks: (options: ExampleOptions) => [{
-                'label': `Binary build (${options.targetFolderName})`,
+            'name': `Debug Pico Example (${options.targetFolderName})`,
+            'type': 'gdbtarget',
+            'request': 'launch',
+            'program': `\${workspaceFolder}/${options.targetFolderName}/build/${options.targetFolderName}.elf`,
+            'gdb': 'gdb-multiarch',
+            'initCommands': [],
+            'target': {
+                'host': '127.0.0.1',
+                'port': '3333',
+                'server': '${config:pico.openocd.path}',
+                'serverParameters': [
+                    '-s',
+                    '~/pico/openocd/tcl',
+                    '-f',
+                    'interface/cmsis-dap.cfg',
+                    '-f',
+                    'target/rp2040.cfg',
+                    '-c',
+                    '"adapter speed 5000"'
+                ]
+            },
+            'preLaunchTask': `Binary build debug (${options.targetFolderName})`
+        }];
+    }
+
+    private getPicoTasks(options: ExampleOptions): TaskCustomization[] {
+        return [
+            {
+                'label': `Run CMake (${options.targetFolderName})`,
                 'type': 'shell',
-                'command': 'cmake . && make',
+                'options': {
+                    'cwd': `\${workspaceFolder}/${options.targetFolderName}`
+                },
+                'command': 'cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON',
                 'group': {
                     'kind': 'build',
                     'isDefault': true
                 },
-                'options': {
-                    'cwd': `\${workspaceFolder}/${options.targetFolderName}`
-                },
-                'problemMatcher': []
+                'problemMatcher': [],
+                'runOptions': {
+                    // @ts-ignore
+                    'runOn': 'folderOpen'
+                }
             },
             {
-                'label': `Launch Example C++ (${options.targetFolderName})`,
+                'label': `Binary build release (${options.targetFolderName})`,
                 'type': 'shell',
-                'command': './Example',
-                'dependsOn': [ `Binary build (${options.targetFolderName})` ],
-                'presentation': {
-                    'echo': true,
-                    'reveal': RevealKind.Always,
-                    'focus': true,
-                    'panel': PanelKind.Shared,
-                    'showReuseMessage': false,
-                    'clear': true
-                },
                 'options': {
                     'cwd': `\${workspaceFolder}/${options.targetFolderName}`
                 },
-                'problemMatcher': []
-            }]
-        },
-        {
-            id: CdtCloudBlueprintExamples.EXAMPLE_TRACES,
-            label: 'Example traces',
-            welcomeFile: 'EXAMPLE_TRACES_README.md',
-            resourcesPath: new URI(module.path).resolve('../../resources/example-traces').normalizePath().toString()
-        },
-        {
-            id: CdtCloudBlueprintExamples.CLANGD_CONTEXTS,
-            label: 'Clangd contexts',
-            welcomeFile: 'CLANGD_CONTEXTS_README.md',
-            resourcesPath: new URI(module.path).resolve('../../resources/clangd-contexts').normalizePath().toString()
-        }];
+                'command': 'cmake . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build -j4',
+                'group': {
+                    'kind': 'build',
+                    'isDefault': true
+                },
+                'problemMatcher': [],
+                'runOptions': {
+                    // @ts-ignore
+                    'runOn': 'folderOpen'
+                }
+            },
+            {
+                'label': `Binary build debug (${options.targetFolderName})`,
+                'type': 'shell',
+                'options': {
+                    'cwd': `\${workspaceFolder}/${options.targetFolderName}`
+                },
+                'command': 'cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build -j4',
+                'group': {
+                    'kind': 'build',
+                    'isDefault': true
+                },
+                'problemMatcher': [],
+                'runOptions': {
+                    // @ts-ignore
+                    'runOn': 'folderOpen'
+                }
+            }
+        ];
     }
 }
