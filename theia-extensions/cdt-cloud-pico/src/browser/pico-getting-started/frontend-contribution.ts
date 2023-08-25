@@ -18,6 +18,7 @@ import { Command, CommandRegistry, MaybePromise, MenuModelRegistry } from '@thei
 import { FileNavigatorContribution } from '@theia/navigator/lib/browser/navigator-contribution';
 import { inject, injectable } from 'inversify';
 
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { PicoWelcomeWidget } from './widget';
 
 export const PICO_WELCOME_COMMAND: Command = {
@@ -32,6 +33,8 @@ export class PicoWelcomeFrontendContribution
 
     @inject(FileNavigatorContribution)
     protected readonly fileNavigatorContribution: FileNavigatorContribution;
+    @inject(FrontendApplicationStateService)
+    protected readonly stateService: FrontendApplicationStateService;
 
     constructor() {
         super({
@@ -60,6 +63,11 @@ export class PicoWelcomeFrontendContribution
             label: PICO_WELCOME_COMMAND.label,
             order: 'a11'
         });
+    }
+
+    async onStart(_app: FrontendApplication): Promise<void> {
+        // Always open Pico Welcome Widget on startup
+        this.stateService.reachedState('ready').then(() => this.openView({ reveal: true, activate: true }));
     }
 }
 
