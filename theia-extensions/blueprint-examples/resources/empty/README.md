@@ -1,6 +1,6 @@
-# Raspberry Pi Pico - Blink Example
+# Raspberry Pi Pico - Empty Example
 
-Blinks an LED on a Raspberry Pi Pico.
+Empty Raspberry Pi Pico Project.
 
 ## Prerequisite
 
@@ -17,18 +17,18 @@ Alternatively, you can pass it directly (`-DPICO_SDK_PATH=`) to cmake later.
 
 For more information, please see the README in the [pico-sdk](https://github.com/raspberrypi/pico-sdk) repository.
 
-## Build The Blink Example
+## Build The Example
 
-To build the example, run the task `Binary build release|debug (blink)` via Menu `Terminal > Run task...`.
+To build the example, run the task `Binary build release|debug (empty)` via Menu `Terminal > Run task...`.
 
 Alternatively, you can run the cmake command directly in a new Terminal (Menu `Terminal > New Terminal`):
 
     cmake . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1 && make -C build -j4
 
-## Debug The Blink Example
+## Debug The Example
 
 To debug the example it comes with a launch configuration.
-Select the `Debug Pico Example (blink)` launch config in the debug view and run it.
+Select the `Debug Pico Example (empty)` launch config in the debug view and run it.
 This will trigger the `Binary build` task and start the example in debug mode.
 
 ## Supported Features

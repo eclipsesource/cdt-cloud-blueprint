@@ -3,6 +3,7 @@
   "version": "1.38.0",
   "description": "Extension for generating Raspberry Pi Pico examples in CDT Cloud Blueprint",
   "dependencies": {
+    "@eclipse-cdt-cloud/blueprint-examples": "1.38.0",
     "@theia/core": "1.38.0",
     "@theia/filesystem": "1.38.0",
     "@theia/navigator": "1.38.0",

@@ -15,9 +15,7 @@
  ********************************************************************************/
 import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
 import { bindDeviceManager } from './device-manager/device-manager-module-util';
-import { bindPicoProjectService } from './project-service/project-service-module-util';
 
 export default new ContainerModule((bind: interfaces.Bind) => {
     bindDeviceManager(bind);
-    bindPicoProjectService(bind);
 });

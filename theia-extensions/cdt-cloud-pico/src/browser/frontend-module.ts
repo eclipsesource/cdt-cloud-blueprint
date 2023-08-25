@@ -26,12 +26,10 @@ import { bindPicoWelcomeWidget } from './pico-getting-started/frontend-module-ut
 import { bindPicoPreferences } from './preferences';
 import { ProjectContribution } from './project-command-contribution';
 import { bindPicoProjectEditor } from './project-editor/project-editor-module-util';
-import { bindPicoProjectService } from './project-service/project-service-module-util';
 import { bindToolbarContribution } from './toolbar-contribution';
 
 export default new ContainerModule((bind: interfaces.Bind, _unbind: interfaces.Unbind, _isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     bindDeviceManager(bind);
-    bindPicoProjectService(bind);
     bindCDTCloudPicoNavigator(bind);
     bindToolbarContribution(rebind);
     bindPicoPreferences(bind);

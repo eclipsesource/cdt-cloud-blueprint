@@ -14,6 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 
+import { GenerateExampleCommand } from '@eclipse-cdt-cloud/blueprint-examples/lib/browser';
 import {
     Command,
     CommandContribution,
@@ -23,7 +24,6 @@ import {
     MenuModelRegistry,
     MessageService,
     QuickInputService,
-    QuickPickValue,
     SelectionService
 } from '@theia/core';
 import { CommonMenus, OpenerService, PreferenceService } from '@theia/core/lib/browser';
@@ -31,16 +31,13 @@ import URI from '@theia/core/lib/common/uri';
 import { DebugConfigurationManager } from '@theia/debug/lib/browser/debug-configuration-manager';
 import { DebugCommands } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
 import { DebugService } from '@theia/debug/lib/common/debug-service';
-import { FileNavigatorCommands, NavigatorContextMenu } from '@theia/navigator/lib/browser/navigator-contribution';
+import { NavigatorContextMenu } from '@theia/navigator/lib/browser/navigator-contribution';
 import { TaskService } from '@theia/task/lib/browser/task-service';
 import { PanelKind, RevealKind, TaskConfiguration, TaskInfo, TaskScope } from '@theia/task/lib/common';
 import { TerminalService } from '@theia/terminal/lib/browser/base/terminal-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser';
 import { inject, injectable } from 'inversify';
 
-import { PicoProjectService } from '../common/project-service';
-import { HardwareType, ProjectTemplate } from '../common/project-types';
-import { PICO_WELCOME_COMMAND } from './pico-getting-started/frontend-contribution';
 import { OPEN_OCD_PATH_SETTING_ID } from './preferences';
 import * as ProjectUtils from './project-service/project-utils';
 
@@ -93,8 +90,6 @@ export class ProjectContribution implements CommandContribution, MenuContributio
     protected readonly openerService: OpenerService;
     @inject(PreferenceService)
     protected readonly preferenceService: PreferenceService;
-    @inject(PicoProjectService)
-    protected readonly projectService: PicoProjectService;
     @inject(QuickInputService)
     protected readonly quickInputService: QuickInputService;
     @inject(SelectionService)
@@ -114,16 +109,7 @@ export class ProjectContribution implements CommandContribution, MenuContributio
 
     registerCommands(registry: CommandRegistry): void {
         registry.registerCommand(ProjectCommands.CREATE_PROJECT, {
-            execute: args => {
-                if (Array.isArray(args) && args.length > 2) {
-                    const projectName = args[0];
-                    const hardwareType = args[1] as HardwareType;
-                    const projectTemplate = args[2] as ProjectTemplate;
-                    this.doCreateProject(projectName, hardwareType, projectTemplate);
-                } else {
-                    this.createProjectViaQuickInput();
-                }
-            },
+            execute: args => this.createProject(args),
             isEnabled: () => this.isProjectCreationAllowed(),
             isVisible: () => this.isProjectCreationAllowed()
         });
@@ -187,70 +173,8 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         return this.workspaceService.tryGetRoots().length > 0;
     }
 
-    protected async createProjectViaQuickInput(): Promise<void> {
-        // QuickInput project name (name of project directory)
-        const inputProjectName = await this.quickInputService.input({
-            prompt: 'Enter CDT Cloud Pico Project Name',
-            placeHolder: 'projectName',
-            ignoreFocusLost: true,
-            validateInput: async (input: string) => {
-                // We only allow letters, numbers, dashes and underscores as project names, as it is used as directory name
-                const regEx = /^[a-zA-Z0-9-_]+$/gm;
-                if (!regEx.test(input)) {
-                    return 'Please enter a valid project name (may only contain letters, numbers, dashes, underscores)!';
-                }
-                return undefined;
-            }
-        });
-        if (!inputProjectName) {
-            this.messageService.error('Cannot create CDT Cloud Pico Project: projectName is missing!');
-            throw Error('Cannot create CDT Cloud Pico Project: projectName is missing!');
-        }
-
-        // QuickPick hardware type
-        const hardwareTypes: Array<QuickPickValue<HardwareType>> = [
-            ...(Object.values(HardwareType).map(value => this.toQuickPickValueHardwareType(`${value.toUpperCase()} project`, value)))
-        ];
-        const selectedHardwareType = await this.quickInputService?.showQuickPick(hardwareTypes,
-            {
-                placeholder: 'Select hardware type',
-                activeItem: hardwareTypes[0] // preselect first available item
-            });
-        if (!selectedHardwareType) {
-            this.messageService.error('Cannot create CDT Cloud Pico Project: hardwareType is missing!');
-            throw Error('Cannot create CDT Cloud Pico Project: hardwareType is missing!');
-        }
-
-        // QuickPick project template
-        const projectTemplates: Array<QuickPickValue<ProjectTemplate>> = [
-            ...(Object.values(ProjectTemplate).map(value => this.toQuickPickValueProjectTemplate(`${value.toUpperCase()} project template`, value)))
-        ];
-        const selectedProjectTemplate = await this.quickInputService?.showQuickPick(projectTemplates,
-            {
-                placeholder: 'Select project template',
-                activeItem: projectTemplates[0] // preselect first available item
-            });
-        if (!selectedProjectTemplate) {
-            this.messageService.error('Cannot create CDT Cloud Pico Project: projectTemplate is missing!');
-            throw Error('Cannot create CDT Cloud Pico Project: projectTemplate is missing!');
-        }
-
-        this.doCreateProject(inputProjectName, selectedHardwareType.value, selectedProjectTemplate.value);
-
-        if (selectedHardwareType.value === HardwareType.PICO) {
-            // Open Pico Getting Started Widget
-            await this.commandService.executeCommand(PICO_WELCOME_COMMAND.id);
-        }
-    }
-
-    protected async doCreateProject(projectName: string, hardwareType: HardwareType, projectTemplate: ProjectTemplate): Promise<void> {
-        // Create CDT Cloud Pico project via project service
-        const workspacePath = (await this.getWorkspaceRoot()).path.toString();
-        const projectPath = await this.projectService.createProject(workspacePath, projectName, hardwareType, projectTemplate);
-
-        // Refresh navigator and reveal newly created project
-        await this.commandService.executeCommand(FileNavigatorCommands.REFRESH_NAVIGATOR.id);
-        await this.commandService.executeCommand(FileNavigatorCommands.REVEAL_IN_NAVIGATOR.id, new URI(projectPath));
+    protected async createProject(...args: string[]): Promise<void> {
+        await this.commandService.executeCommand(GenerateExampleCommand.id, ...args);
     }
 
     protected async buildProject(projectPath: string): Promise<void> {
@@ -356,14 +280,6 @@ export class ProjectContribution implements CommandContribution, MenuContributio
 
     protected getProjectName(projectPath: string): string {
         return new URI(projectPath).path.base;
-    }
-
-    protected toQuickPickValueHardwareType(label: string, value: HardwareType): QuickPickValue<HardwareType> {
-        return { value, label };
-    }
-
-    protected toQuickPickValueProjectTemplate(label: string, value: ProjectTemplate): QuickPickValue<ProjectTemplate> {
-        return { value, label };
     }
 
     protected async getWorkspaceRoot(): Promise<URI> {

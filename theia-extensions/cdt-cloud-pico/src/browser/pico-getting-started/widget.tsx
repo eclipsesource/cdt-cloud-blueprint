@@ -13,6 +13,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
+import { CdtCloudBlueprintExamples } from '@eclipse-cdt-cloud/blueprint-examples/lib/common/cdt-blueprint-examples';
 import { ApplicationShell, codicon, open, OpenerService } from '@theia/core/lib/browser';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { CommandRegistry, MessageService } from '@theia/core/lib/common';
@@ -22,7 +23,6 @@ import { WorkspaceService } from '@theia/workspace/lib/browser';
 import { inject, injectable, postConstruct } from 'inversify';
 import * as React from 'react';
 
-import { HardwareType, ProjectTemplate } from '../../common/project-types';
 import { TOGGLE__VIEW } from '../device-manager/device-manager-commands';
 import { ProjectCommands } from '../project-command-contribution';
 
@@ -130,7 +130,7 @@ export class PicoWelcomeWidget extends ReactWidget {
                             <p>
                                 To create a new project, click the toolbar icon{' '}
                                 <i className={'codicon codicon-file-directory-create'} />. This will open
-                                quick inputs to define the project name, hardware type and project template.
+                                a quick input to select a Pico project template.
                                 The project will be created as a separate project directory in the currently opened workspace and adds project-specific tasks
                                 to the workspace.<br />
                                 The action item below creates a Pico Blink template project.
@@ -160,7 +160,7 @@ export class PicoWelcomeWidget extends ReactWidget {
                             <p>
                                 To edit the project's C file, open the <code>src/blink.c</code> file in the file explorer
                                 or use the action item below.
-                                {this.renderActionItem('Edit Pico Blink Project', this.editBlinkCFile)}
+                                {this.renderActionItem('Edit Pico Blink C Code', this.editBlinkCFile)}
                             </p>
                         )}
                     </div>
@@ -330,7 +330,7 @@ export class PicoWelcomeWidget extends ReactWidget {
     }
 
     protected createBlinkProject = (): void => {
-        this.commandRegistry.executeCommand(ProjectCommands.CREATE_PROJECT.id, ['blink', HardwareType.PICO, ProjectTemplate.BLINK]);
+        this.commandRegistry.executeCommand(ProjectCommands.CREATE_PROJECT.id, CdtCloudBlueprintExamples.PICO_BLINK);
     };
 
     protected editBlinkProject = (): void => {
