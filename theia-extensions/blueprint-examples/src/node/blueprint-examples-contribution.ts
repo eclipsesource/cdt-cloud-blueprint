@@ -27,7 +27,7 @@ export class CdtCloudBlueprintExamplesContribution implements ExamplesContributi
             id: CdtCloudBlueprintExamples.CMAKE_EXAMPLE,
             label: 'CMake example',
             welcomeFile: 'CMAKE_EXAMPLE_README.md',
-            resourcesPath: new URI(module.path).resolve('../../resources/cmake-example').normalizePath().toString(),
+            resourcesPath: new URI(__dirname).resolve('../../resources/cmake-example').normalizePath().toString(),
             launches: (options: ExampleOptions) => [{
                 'type': 'gdb',
                 'request': 'launch',
