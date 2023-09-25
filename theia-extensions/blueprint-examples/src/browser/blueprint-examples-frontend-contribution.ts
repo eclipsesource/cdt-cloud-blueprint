@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2022 STMicroelectronics and others.
+ * Copyright (C) 2022-2023 STMicroelectronics and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -21,6 +21,7 @@ import URI from '@theia/core/lib/common/uri';
 import { EditorManager } from '@theia/editor/lib/browser';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { FileNavigatorCommands } from '@theia/navigator/lib/browser/navigator-contribution';
+import { TaskService } from '@theia/task/lib/browser/task-service';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 
 import { inject, injectable } from 'inversify';
@@ -60,6 +61,9 @@ export class GenerateExampleCommandHandler implements CommandHandler {
     @inject(CommandService)
     protected readonly commandService: CommandService;
 
+    @inject(TaskService)
+    protected readonly taskService: TaskService;
+
     async execute(...args: string[]): Promise<void> {
         const example = await this.selectExample(args);
         if (!example) {
@@ -92,6 +96,9 @@ export class GenerateExampleCommandHandler implements CommandHandler {
                 const fileUri = targetFolder.resolve(example.welcomeFile);
                 await this.editorManager.open(fileUri);
             }
+
+            // Run CMake
+            this.taskService.runTaskByLabel(this.taskService.startUserAction(), `Run CMake (${targetFolderName})`);
         } catch (error) {
             console.error('Uncaught Exception: ', error.toString());
         } finally {
