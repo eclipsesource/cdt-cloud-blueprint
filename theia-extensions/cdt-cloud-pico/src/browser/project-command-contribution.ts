@@ -38,7 +38,6 @@ import { TerminalService } from '@theia/terminal/lib/browser/base/terminal-servi
 import { WorkspaceService } from '@theia/workspace/lib/browser';
 import { inject, injectable } from 'inversify';
 
-import { OPEN_OCD_PATH_SETTING_ID } from './preferences';
 import * as ProjectUtils from './project-service/project-utils';
 
 export namespace ProjectCommands {
@@ -57,14 +56,6 @@ export namespace ProjectCommands {
     export const EDIT_PROJECT: Command = {
         id: 'cdtcloud.pico.project.edit',
         label: 'Edit Pico Project File'
-    };
-    export const START_OPENOCD: Command = {
-        id: 'cdtcloud.pico.openocd.start',
-        label: 'Start OpenOCD'
-    };
-    export const STOP_OPENOCD: Command = {
-        id: 'cdtcloud.pico.openocd.stop',
-        label: 'Stop OpenOCD'
     };
     export const START_MINICOM: Command = {
         id: 'cdtcloud.pico.minicom.start',
@@ -123,16 +114,6 @@ export class ProjectContribution implements CommandContribution, MenuContributio
             execute: projectPath => this.editProject(projectPath),
             isEnabled: () => this.isProjectCreationAllowed(),
             isVisible: () => false // do not show in command palette
-        });
-        registry.registerCommand(ProjectCommands.START_OPENOCD, {
-            execute: () => this.startOpenOCD(),
-            isEnabled: () => true,
-            isVisible: () => true
-        });
-        registry.registerCommand(ProjectCommands.STOP_OPENOCD, {
-            execute: () => this.stopOpenOCD(),
-            isEnabled: () => true,
-            isVisible: () => true
         });
         registry.registerCommand(ProjectCommands.START_MINICOM, {
             execute: () => this.startMinicom(),
@@ -223,20 +204,6 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         if (runningTask) {
             await this.taskService.terminateTask(runningTask);
         }
-    }
-
-    protected get openOCDTaskLabel(): string {
-        return 'OpenOCD';
-    }
-
-    protected async startOpenOCD(): Promise<void> {
-        const openOCDPath = this.preferenceService.get<string>(OPEN_OCD_PATH_SETTING_ID);
-        const openOCDCommand = `${openOCDPath}/src/openocd -s ${openOCDPath}/tcl -f interface/picoprobe.cfg -f target/rp2040.cfg`;
-        this.startTask(this.openOCDTaskLabel, openOCDCommand);
-    }
-
-    protected async stopOpenOCD(): Promise<void> {
-        this.stopTask(this.openOCDTaskLabel);
     }
 
     protected get minicomTaskLabel(): string {

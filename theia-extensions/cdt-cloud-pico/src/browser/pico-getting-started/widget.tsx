@@ -208,19 +208,6 @@ export class PicoWelcomeWidget extends ReactWidget {
                 <div className='pico-flex-grid'>
                     <div className='pico-col'>
                         {this.renderFeatureSection(
-                            'OpenOCD',
-                            'codicon codicon-arrow-swap',
-                            <p>
-                                To start or stop OpenOCD, use commands from the command palette or click the action item below. <br />
-                                {this.renderActionItem('Start OpenOCD', this.startOpenOCD, 'play-circle')}
-                                {this.renderActionItem('Stop OpenOCD', this.stopOpenOCD, 'stop-circle')}
-                            </p>
-                        )}
-                    </div>
-                </div>
-                <div className='pico-flex-grid'>
-                    <div className='pico-col'>
-                        {this.renderFeatureSection(
                             'Minicom',
                             'codicon codicon-output',
                             <p>
@@ -340,14 +327,6 @@ export class PicoWelcomeWidget extends ReactWidget {
 
     protected toggleDeviceManagerView = (): void => {
         this.commandRegistry.executeCommand(TOGGLE__VIEW.id);
-    };
-
-    protected startOpenOCD = (): void => {
-        this.commandRegistry.executeCommand(ProjectCommands.START_OPENOCD.id);
-    };
-
-    protected stopOpenOCD = (): void => {
-        this.commandRegistry.executeCommand(ProjectCommands.STOP_OPENOCD.id);
     };
 
     protected startMinicom = (): void => {
