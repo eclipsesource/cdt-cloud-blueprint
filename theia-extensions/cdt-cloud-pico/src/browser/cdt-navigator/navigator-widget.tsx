@@ -66,14 +66,6 @@ export class PicoFileNavigatorWidget extends FileNavigatorWidget {
                     />
                 </div>
                 <div className='tool-item enabled'>
-                    <div className='codicon codicon-repo-push action-label'
-                        title={ProjectCommands.FLASH_PROJECT.label}
-                        onClick={e => this.handleFlashIconClicked(e, projectPath)}
-                        data-id={node.id}
-                        id={ProjectCommands.DEBUG_PROJECT.id}
-                    />
-                </div>
-                <div className='tool-item enabled'>
                     <div className='codicon codicon-symbol-property action-label'
                         title={ProjectCommands.BUILD_PROJECT.label}
                         onClick={e => this.handleBuildIconClicked(e, projectPath)}
@@ -106,12 +98,6 @@ export class PicoFileNavigatorWidget extends FileNavigatorWidget {
     protected async handleEditIconClicked(e: React.MouseEvent<HTMLDivElement>, projectPath: string): Promise<void> {
         e.stopPropagation();
         this.commandService.executeCommand(ProjectCommands.EDIT_PROJECT.id, projectPath);
-    }
-
-    protected async handleFlashIconClicked(e: React.MouseEvent<HTMLDivElement>, projectPath: string): Promise<void> {
-        e.stopPropagation();
-        this.commandService.executeCommand(ProjectCommands.FLASH_PROJECT.id, projectPath);
-
     }
 
 }

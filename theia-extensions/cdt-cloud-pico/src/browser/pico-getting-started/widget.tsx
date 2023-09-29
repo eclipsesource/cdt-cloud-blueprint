@@ -181,19 +181,6 @@ export class PicoWelcomeWidget extends ReactWidget {
                 <div className='pico-flex-grid'>
                     <div className='pico-col'>
                         {this.renderFeatureSection(
-                            'Flash the Blink Project to your device',
-                            'codicon codicon-repo-push',
-                            <p>
-                                To flash the built Blink project to your device, click the project's tool{' '}
-                                <i className={'codicon codicon-repo-push'} /> or use the action item below.
-                                {this.renderActionItem('Flash the Blink Project to your device', this.flashBlinkProject)}
-                            </p>
-                        )}
-                    </div>
-                </div>
-                <div className='pico-flex-grid'>
-                    <div className='pico-col'>
-                        {this.renderFeatureSection(
                             'Debug Blink Project',
                             'codicon codicon-debug-alt',
                             <p>
@@ -349,10 +336,6 @@ export class PicoWelcomeWidget extends ReactWidget {
         open(this.openerService, this.getBlinkFileUri('src/blink.c')).then(() => {
             this.commandRegistry.executeCommand(ProjectCommands.DEBUG_PROJECT.id, this.getBlinkProjectUri());
         });
-    };
-
-    protected flashBlinkProject = (): void => {
-        this.commandRegistry.executeCommand(ProjectCommands.FLASH_PROJECT.id, this.getBlinkProjectUri());
     };
 
     protected toggleDeviceManagerView = (): void => {

@@ -58,10 +58,6 @@ export namespace ProjectCommands {
         id: 'cdtcloud.pico.project.edit',
         label: 'Edit Pico Project File'
     };
-    export const FLASH_PROJECT: Command = {
-        id: 'cdtcloud.pico.project.flash',
-        label: 'Flash Project to device'
-    };
     export const START_OPENOCD: Command = {
         id: 'cdtcloud.pico.openocd.start',
         label: 'Start OpenOCD'
@@ -125,11 +121,6 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         });
         registry.registerCommand(ProjectCommands.EDIT_PROJECT, {
             execute: projectPath => this.editProject(projectPath),
-            isEnabled: () => this.isProjectCreationAllowed(),
-            isVisible: () => false // do not show in command palette
-        });
-        registry.registerCommand(ProjectCommands.FLASH_PROJECT, {
-            execute: projectPath => this.flashProject(projectPath),
             isEnabled: () => this.isProjectCreationAllowed(),
             isVisible: () => false // do not show in command palette
         });
@@ -200,11 +191,6 @@ export class ProjectContribution implements CommandContribution, MenuContributio
         const uri = new URI(projectPath).resolve('.pico-project');
         const opener = await this.openerService.getOpener(uri);
         opener.open(uri);
-    }
-
-    protected async flashProject(projectPath: string): Promise<void> {
-        // TODO: flash project to device
-        this.messageService.warn('TODO: Will flash project to device');
     }
 
     protected async getRunningTaskByLabel(taskLabel: string): Promise<TaskInfo | undefined> {

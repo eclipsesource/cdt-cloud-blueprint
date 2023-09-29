@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { CommandService, nls } from '@theia/core';
-import { codicon, LabelProvider, NavigatableWidget, NavigatableWidgetOptions, ReactWidget } from '@theia/core/lib/browser';
+import { LabelProvider, NavigatableWidget, NavigatableWidgetOptions, ReactWidget, codicon } from '@theia/core/lib/browser';
 import { BinaryBuffer } from '@theia/core/lib/common/buffer';
 import URI from '@theia/core/lib/common/uri';
 import {
@@ -113,9 +113,6 @@ export class ProjectEditorWidget extends ReactWidget implements NavigatableWidge
                     <button title='Debug Project' className='theia-button' onClick={e => this.runDebug(e)}>
                         <i className='codicon codicon-debug-alt' />
                     </button>
-                    <button title='Flash Project to device' className='theia-button' onClick={e => this.runFlash(e)}>
-                        <i className='codicon codicon-repo-push' />
-                    </button>
                     <button title='Build Project' className='theia-button' onClick={e => this.runBuild(e)}>
                         <i className='codicon codicon-wrench' />
                     </button>
@@ -210,10 +207,6 @@ export class ProjectEditorWidget extends ReactWidget implements NavigatableWidge
 
     protected runDebug(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
         this.commandService.executeCommand(ProjectCommands.DEBUG_PROJECT.id, this.getProjectPath());
-    }
-
-    protected runFlash(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
-        this.commandService.executeCommand(ProjectCommands.FLASH_PROJECT.id, this.getProjectPath());
     }
 
     protected runBuild(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
