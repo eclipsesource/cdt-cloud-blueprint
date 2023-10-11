@@ -27,7 +27,8 @@
       "env": {
         "NODE_ENV": "development",
         "TRACE_SERVER_PATH": "${workspaceFolder}/tracecompass-server/trace-compass-server/tracecompass-server",
-        "PICO_SDK_PATH": "~/pico/pico-sdk"
+        "PICO_SDK_PATH": "~/pico/pico-sdk",
+        "PATH": "~/pico/picotool/build:${env:PATH}"
       },
       "sourceMaps": true,
       "outFiles": [
@@ -61,7 +62,8 @@
       "env": {
         "NODE_ENV": "development",
         "TRACE_SERVER_PATH": "${workspaceFolder}/tracecompass-server/trace-compass-server/tracecompass-server",
-        "PICO_SDK_PATH": "~/pico/pico-sdk"
+        "PICO_SDK_PATH": "~/pico/pico-sdk",
+        "PATH": "~/pico/picotool/build:${env:PATH}"
       },
       "sourceMaps": true,
       "outFiles": [

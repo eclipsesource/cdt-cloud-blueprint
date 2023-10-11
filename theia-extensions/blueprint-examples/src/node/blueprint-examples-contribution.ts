@@ -50,20 +50,21 @@ export class CdtCloudBlueprintExamplesContribution implements ExamplesContributi
             'request': 'launch',
             'program': `\${workspaceFolder}/${options.targetFolderName}/build/${options.targetFolderName}.elf`,
             'gdb': 'gdb-multiarch',
+            'verbose': true,
+            'logFile': `\${workspaceFolder}/.log/gdb-${options.targetFolderName}-debug.log`,
             'initCommands': [],
             'target': {
                 'host': '127.0.0.1',
                 'port': '3333',
-                'server': '${config:pico.openocd.path}',
+                'server': '${config:pico.openocd.path}/src/openocd',
+                'serverStartupDelay': 1000,
                 'serverParameters': [
                     '-s',
-                    '~/pico/openocd/tcl',
+                    '${config:pico.openocd.path}/tcl',
                     '-f',
                     'interface/cmsis-dap.cfg',
                     '-f',
-                    'target/rp2040.cfg',
-                    '-c',
-                    '"adapter speed 5000"'
+                    'target/rp2040.cfg'
                 ]
             },
             'preLaunchTask': `Binary build debug (${options.targetFolderName})`

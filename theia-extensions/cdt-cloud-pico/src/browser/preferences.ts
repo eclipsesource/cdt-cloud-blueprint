@@ -26,8 +26,8 @@ export const PicoConfigSchema: PreferenceSchema = {
     properties: {
         [OPEN_OCD_PATH_SETTING_ID]: {
             type: 'string',
-            description: 'Pico OpenOCD binary or absolute path',
-            default: 'openocd',
+            description: 'Path to OpenOCD directory',
+            default: '~/pico/openocd',
             scope: PreferenceScope.Workspace
         },
         [GDB_MULTIARCH_PATH_SETTING_ID]: {
