@@ -13,13 +13,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { injectable } from '@theia/core/shared/inversify';
-import { exec, ExecException } from 'child_process';
+import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { ExecException, exec } from 'child_process';
 import { Device } from '../../common/device-manager/device';
 import { DeviceManagerService } from '../../common/device-manager/device-manager-service';
 
 @injectable()
 export class PicotoolDeviceManagerService implements DeviceManagerService {
+
+    @inject(EnvVariablesServer)
+    protected readonly envServer: EnvVariablesServer;
 
     refreshInterval: NodeJS.Timer;
 
@@ -27,9 +31,10 @@ export class PicotoolDeviceManagerService implements DeviceManagerService {
     private discoveryError?: Error;
 
     async discoverDevices(): Promise<Device[]> {
-        return new Promise((resolve, reject) => {
-            // TODO: Get picotool path from the preferences
-            exec('picotool info -b', (error: ExecException | null, stdout: string, stderr: string) => {
+        return new Promise(async (resolve, reject) => {
+            const picoToolPath = await this.envServer.getValue('PICOTOOL_PATH');
+
+            exec(`${picoToolPath?.value} info -b`, (error: ExecException | null, stdout: string, stderr: string) => {
                 // Exit 249 happens on failure to find any devices in BOOTSEL mode
                 if (!!error && error.code !== 249) {
                     const message = 'Failed to execute picotool to discover connected devices.';
