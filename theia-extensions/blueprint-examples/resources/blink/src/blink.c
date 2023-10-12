@@ -14,13 +14,18 @@ int main() {
         stdio_init_all();
         printf("\nstarting blinking");
         const uint LED_PIN = PICO_DEFAULT_LED_PIN;
+        int ledStatus = 1; // start with LED ON
         gpio_init(LED_PIN);
         gpio_set_dir(LED_PIN, GPIO_OUT);
         while (true) {
-            gpio_put(LED_PIN, 1);
+            gpio_put(LED_PIN, ledStatus);
+            printf("\nLED ON");
             sleep_ms(250);
-            gpio_put(LED_PIN, 0);
+            ledStatus--;
+            gpio_put(LED_PIN, ledStatus);
+            printf("\nLED OFF");
             sleep_ms(250);
+            ledStatus++;
         }
     #endif
 }

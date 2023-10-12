@@ -96,7 +96,8 @@ export class GenerateExampleCommandHandler implements CommandHandler {
                 const fileUri = targetFolder.resolve(example.welcomeFile);
                 await this.editorManager.open(fileUri);
             }
-
+            // FIXME temporary sleep
+            await new Promise(res => setTimeout(res, 750));
             // Run CMake
             this.taskService.runTaskByLabel(this.taskService.startUserAction(), `Run CMake (${targetFolderName})`);
         } catch (error) {
