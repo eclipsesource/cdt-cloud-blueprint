@@ -51,8 +51,7 @@ export class CdtCloudBlueprintExamplesContribution implements ExamplesContributi
             'program': `\${workspaceFolder}/${options.targetFolderName}/build/${options.targetFolderName}.elf`,
             'gdb': 'gdb-multiarch',
             'verbose': true,
-            'logFile': `\${workspaceFolder}/.log/gdb-${options.targetFolderName}-debug.log`,
-            'initCommands': [],
+            'initCommands': ['load'],
             'target': {
                 'host': '127.0.0.1',
                 'port': '3333',
@@ -64,7 +63,9 @@ export class CdtCloudBlueprintExamplesContribution implements ExamplesContributi
                     '-f',
                     'interface/cmsis-dap.cfg',
                     '-f',
-                    'target/rp2040.cfg'
+                    'target/rp2040.cfg',
+                    '-c',
+                    'adapter speed 5000'
                 ]
             },
             'preLaunchTask': `Binary build debug (${options.targetFolderName})`
